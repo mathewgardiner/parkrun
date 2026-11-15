@@ -1,0 +1,11 @@
+# Build output (the public site is written to docs/, which is committed)
+raefarer-dash/dist/
+# Downloaded every refresh (~1 MB)
+raefarer-dash/data/events.json
+
+# Never commit secrets
+.env
+.env.*
+*token*
+*secret*
+*.pem

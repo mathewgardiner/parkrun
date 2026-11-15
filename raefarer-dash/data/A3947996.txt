@@ -1,0 +1,66 @@
+# Katie (A3947996) — fetched 2026-11-15 from https://www.parkrun.com.au/parkrunner/3947996/ (Event Summaries)
+# total: 183
+# Volunteer credits: 19
+# Volunteer roles: Timekeeper 1, Token Sorting 6, Marshal 3, Other 1, Barcode Scanning 3, Funnel Manager 1, Tail Walker 3, parkwalker 1
+# Event|Runs|BestTime
+Willoughby|43|22:13
+North Sydney|18|22:27
+Parramatta|5|22:16
+Wentworth Common|5|21:57
+Centennial|4|23:24
+Rhodes|4|22:06
+GreenWay|4|23:05
+Wildflower|4|24:44
+Werrington Lakes Reserve|3|23:43
+East Richmond|3|21:43
+Curl Curl|3|22:08
+Panania|3|22:50
+St Peters|3|23:40
+Pirrama|3|23:21
+Southern Highlands Botanic Gardens|3|21:36
+Cooks River|3|23:33
+The Ponds|3|23:01
+Macquarie University|3|22:40
+Auburn Botanic Gardens|3|23:03
+Mosman|3|22:33
+Dolls Point|3|22:58
+Mt Penang|2|22:32
+Rex Jackson Oval|2|27:09
+Australian Botanic Garden Mount Annan|2|25:58
+Penrith Lakes|2|23:35
+Campbelltown|2|23:55
+Nepean River|2|23:10
+Elara Riparian Parklands|2|22:56
+Cowpasture Reserve, Camden|2|23:16
+Kamay|2|24:17
+Whalan Reserve|2|21:35
+Menai|2|23:27
+Rooty Hill|2|20:50
+Galston|2|24:21
+Rouse Hill|2|26:32
+Cronulla|2|27:38
+Casula Parklands|2|22:45
+Chipping Norton|2|21:56
+Pioneer Dairy|1|30:12
+Albert, Melbourne|1|25:51
+San Remo|1|22:58
+Reddall Reserve|1|22:21
+Queens Domain|1|24:14
+Zeehan Golf Club|1|24:32
+Nulkaba|1|22:58
+The Beaches|1|28:03
+Lawson|1|25:24
+Sandon Point|1|22:43
+Studley|1|24:20
+Port Macquarie|1|22:49
+The Entrance|1|27:34
+Gardiners Creek|1|26:06
+Hikarigaoka koen|1|24:04
+Lithgow|1|24:42
+Woy Woy|1|25:04
+Batemans Bay|1|26:59
+Avondale University College|1|25:45
+Orange|1|29:39
+Picton|1|23:37
+Folkestone|1|26:19
+Richmond|1|27:29

@@ -1,0 +1,429 @@
+<meta name="dash-one-writer">
+<style>
+  .gp { --gp-judi: #e8792b; --gp-katie: #3a7fd0; --gp-mathew: #3a9a52;
+    display: grid; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+  .gp h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+  .gp h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; text-wrap: balance; }
+  .gp h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
+  .gp p { margin: 0; max-width: 70ch; }
+  .gp-head { display: grid; gap: var(--cds-gap-sm); }
+  .gp-eyebrow { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .06em; text-transform: uppercase; }
+  .gp-lede { font-size: var(--cds-font-size-body); line-height: 1.5; }
+  .gp-meta, .gp-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; }
+  .gp-section { display: grid; gap: var(--cds-gap-md); min-width: 0; }
+
+  .gp-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--cds-gap-md); }
+  .gp-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); }
+  .gp-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .gp-tile-value { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.1; }
+
+  .gp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--cds-gap-md); }
+  .gp-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 3px solid var(--runner); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); align-content: start; min-width: 0; }
+  .gp-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .gp-judi { --runner: var(--gp-judi); } .gp-katie { --runner: var(--gp-katie); } .gp-mathew { --runner: var(--gp-mathew); }
+  .gp-swatch { display: inline-block; width: .7em; height: .7em; border-radius: 50%; background: var(--runner); margin-right: .4em; }
+  .gp-level { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+  .gp-level small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-right: .3em; }
+  .gp-bar { height: 10px; border-radius: 5px; background: var(--cds-chart-grid); overflow: hidden; }
+  .gp-bar-fill { height: 100%; border-radius: 5px; background: var(--runner); }
+  .gp-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .gp-missing { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .gp-missing li { font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .gp-missing li.gp-more { border-style: dashed; color: var(--color-fg-muted); }
+
+  .gp-seg { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: 999px; padding: 3px; gap: 3px; flex-wrap: wrap; justify-self: start; }
+  .gp-seg button { font: inherit; font-size: var(--cds-font-size-caption); border: 0; background: transparent; color: var(--color-fg); padding: 5px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .gp-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
+  .gp-seg button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .gp-seg .gp-swatch { margin: 0; }
+  .gp-pick-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .gp-pick { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+
+  .gp-scroll { overflow-x: auto; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+  .gp-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
+  .gp-table th, .gp-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .gp-table th:nth-child(-n+2), .gp-table td:nth-child(-n+2) { text-align: left; }
+  #scoreboard .gp-table th:nth-child(2), #scoreboard .gp-table td:nth-child(2) { text-align: right; }
+  .gp-table thead th { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); background: var(--color-panel); }
+  .gp-table tbody tr:last-child td { border-bottom: 0; }
+  .gp-table td.gp-rank { color: var(--color-fg-muted); width: 2.5em; }
+  .gp-table .gp-ev { width: 100%; }
+  .gp-table .gp-p { width: 5.5em; min-width: 5.5em; text-align: center !important; }
+  .gp-table tr.gp-top td { background: color-mix(in srgb, var(--color-warn) 9%, transparent); }
+  .gp-table tr.gp-done td { color: var(--color-fg-muted); }
+  .gp-table td.gp-away { opacity: .45; }
+  .gp-c { display: inline-block; min-width: 2.1em; text-align: center; border-radius: 999px; padding: 1px 6px; }
+  .gp-c.gp-zero { background: color-mix(in srgb, var(--color-bad) 18%, transparent); color: var(--color-bad); font-weight: var(--cds-font-weight-medium); }
+  .gp-c.gp-need { box-shadow: inset 0 0 0 1px var(--color-warn); }
+  .gp-c.gp-ok { color: var(--color-fg-muted); }
+  .gp-chip { font-size: var(--cds-font-size-caption); border-radius: 999px; padding: 1px 7px; margin-left: 6px; background: color-mix(in srgb, var(--color-ok) 16%, transparent); color: var(--color-ok); }
+  .gp-pips { display: inline-flex; gap: 3px; vertical-align: middle; margin-left: 8px; }
+  .gp-pips i { width: 9px; height: 9px; border-radius: 50%; background: var(--runner); box-sizing: border-box; }
+  .gp-pips i.gp-hollow { background: transparent; border: 1.5px solid var(--runner); }
+  .gp-empty td { text-align: left !important; color: var(--color-fg-muted); padding: 16px 10px; }
+  .gp-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); align-items: center; }
+  .gp-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .gp-mapwrap { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--cds-gap-lg); align-items: start; }
+  @media (max-width: 760px) { .gp-mapwrap { grid-template-columns: 1fr; } }
+  .gp-map { position: relative; min-height: 360px; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; }
+  .gp-map svg { display: block; width: 100%; height: auto; }
+  .gp-map text { font-family: var(--font-anthropic-sans); }
+  .gp-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 6px 9px; font-size: var(--cds-font-size-caption); max-width: 230px; z-index: 2; }
+  .gp-tip b { display: block; color: var(--color-fg); }
+  .gp-tip span { color: var(--cds-text-secondary); }
+  .gp-nendys { display: grid; gap: var(--cds-gap-md); }
+  .gp-nendy ol { margin: 4px 0 0; padding-left: 1.4em; display: grid; gap: 2px; }
+  .gp-nendy li span { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; margin-left: 4px; }
+  .gp-nendy li:first-child { font-weight: var(--cds-font-weight-medium); }
+
+  .gp details { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .gp details summary { cursor: pointer; }
+  .gp details ul { margin: var(--cds-gap-sm) 0 0; padding-left: 1.2em; display: grid; gap: 4px; max-width: 75ch; }
+  [data-dash-source-state=refreshing] { opacity: .5; }
+</style>
+
+<div class="gp">
+  <header class="gp-head" id="top">
+    <h1>parkrun HQ</h1>
+    <p class="gp-lede" id="takeaway">Next outing for all three: <b data-draw="tk" data-field="event" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b>. Needed by <b data-draw="tk" data-field="needed_by_going" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> of you, about <b data-draw="tk" data-field="drive_mins" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> min from Cammeray.</p>
+    <p class="gp-meta">Results to <span data-draw="asof" data-source="family" data-field="as_of" data-row="0">—</span> · Judi A7342171 · Katie A3947996 · Mathew A7157558</p>
+  </header>
+
+  <section class="gp-section" id="family">
+    <div class="gp-tiles">
+      <div class="gp-tile"><span class="gp-tile-label">Family parkruns</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="total_runs" data-row="0">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Volunteer credits</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="volunteer_credits" data-row="0">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Events all 3 have run</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="shared_events" data-row="0">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Different events</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="events_any" data-row="0">—</span></div>
+    </div>
+  </section>
+
+  <section class="gp-section" id="raefarer">
+    <h2>Raefarer rounds</h2>
+    <p class="gp-note">A round is a run at all 36 Greater Sydney parkruns. The big number is rounds finished; the bar is progress on the next. An event none of you has run doesn't count yet. Once anyone runs it, it counts for everyone.</p>
+    <div class="gp-cards">
+      <article class="gp-card gp-judi" id="rf-judi">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Judi</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7342171">—</span></div></div>
+        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7342171">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7342171">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7342171">—</span> done</p>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A7342171" data-source="runners"></div>
+        <p class="gp-sub">Still to run, nearest first</p>
+        <ul class="gp-missing" data-draw="rf-missing" data-key="judi" data-source="sydney_table"></ul>
+      </article>
+      <article class="gp-card gp-katie" id="rf-katie">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Katie</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A3947996">—</span></div></div>
+        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A3947996">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A3947996">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A3947996">—</span> done</p>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A3947996" data-source="runners"></div>
+        <p class="gp-sub">Still to run, nearest first</p>
+        <ul class="gp-missing" data-draw="rf-missing" data-key="katie" data-source="sydney_table"></ul>
+      </article>
+      <article class="gp-card gp-mathew" id="rf-mathew">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Mathew</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7157558">—</span></div></div>
+        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7157558">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7157558">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7157558">—</span> done</p>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A7157558" data-source="runners"></div>
+        <p class="gp-sub">Still to run, nearest first</p>
+        <ul class="gp-missing" data-draw="rf-missing" data-key="mathew" data-source="sydney_table"></ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="gp-section" id="events">
+    <h2>Where to go next</h2>
+    <p class="gp-note">Pick who's going. Ranked by how many of the group need it, then events the others have already done (saving shared ones for when you're all together), then drive time from Cammeray with no traffic.</p>
+    <div class="gp-pick">
+      <span class="gp-pick-label" id="going-label">Who's going</span>
+      <div class="gp-seg" role="group" aria-labelledby="going-label">
+        <button type="button" class="gp-going gp-judi" data-key="judi" aria-pressed="true"><span class="gp-swatch"></span>Judi</button>
+        <button type="button" class="gp-going gp-katie" data-key="katie" aria-pressed="true"><span class="gp-swatch"></span>Katie</button>
+        <button type="button" class="gp-going gp-mathew" data-key="mathew" aria-pressed="true"><span class="gp-swatch"></span>Mathew</button>
+      </div>
+    </div>
+    <div class="gp-legend">
+      <span><span class="gp-c gp-zero">0</span> never run</span>
+      <span><span class="gp-c gp-need">1</span> needed this round</span>
+      <span><span class="gp-c gp-ok">2</span> done this round</span>
+      <span><span class="gp-pips"><i class="gp-hollow" style="--runner: var(--color-fg-muted)"></i></span> not going, but needs it</span>
+    </div>
+    <div class="gp-scroll">
+      <table class="gp-table" data-source="combos" data-row-key="combo,event">
+        <thead><tr>
+          <th data-field="rank">#</th>
+          <th data-field="event" class="gp-ev">Event</th>
+          <th data-field="needed_by_going">Needed by</th>
+          <th data-field="drive_mins">Drive (min)</th>
+          <th data-field="runs_judi" class="gp-p">Judi</th>
+          <th data-field="runs_katie" class="gp-p">Katie</th>
+          <th data-field="runs_mathew" class="gp-p">Mathew</th>
+        </tr></thead>
+        <tbody data-draw="going-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gp-section" id="nendy">
+    <h2>NENDY map</h2>
+    <p class="gp-note">Nearest Event Not Done Yet, in a straight line from Cammeray. Any parkrun counts. Pick a person to see their next five.</p>
+    <div class="gp-seg" role="group" aria-label="Show NENDYs for">
+      <button type="button" class="gp-who" data-who="all" aria-pressed="true">Everyone</button>
+      <button type="button" class="gp-who gp-judi" data-who="judi" aria-pressed="false"><span class="gp-swatch"></span>Judi</button>
+      <button type="button" class="gp-who gp-katie" data-who="katie" aria-pressed="false"><span class="gp-swatch"></span>Katie</button>
+      <button type="button" class="gp-who gp-mathew" data-who="mathew" aria-pressed="false"><span class="gp-swatch"></span>Mathew</button>
+    </div>
+    <div class="gp-mapwrap">
+      <div class="gp-map" id="nendy-map" data-draw="map" data-source="sydney_table nendy"></div>
+      <div class="gp-nendys">
+        <div class="gp-nendy gp-judi" id="nendy-judi"><h3><span class="gp-swatch"></span>Judi's NENDYs</h3><ol data-draw="nendy-list" data-key="judi" data-source="nendy"></ol></div>
+        <div class="gp-nendy gp-katie" id="nendy-katie"><h3><span class="gp-swatch"></span>Katie's NENDYs</h3><ol data-draw="nendy-list" data-key="katie" data-source="nendy"></ol></div>
+        <div class="gp-nendy gp-mathew" id="nendy-mathew"><h3><span class="gp-swatch"></span>Mathew's NENDYs</h3><ol data-draw="nendy-list" data-key="mathew" data-source="nendy"></ol></div>
+      </div>
+    </div>
+    <div class="gp-legend">
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--color-warn)"></circle></svg> someone still needs it</span>
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--cds-chart-muted)"></circle></svg> everyone's done it this round</span>
+      <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" style="fill: var(--color-fg)"></rect></svg> Cammeray</span>
+      <span>Coastline is approximate.</span>
+    </div>
+  </section>
+
+  <section class="gp-section" id="scoreboard">
+    <h2>Scoreboard</h2>
+    <div class="gp-scroll">
+      <table class="gp-table" data-source="runners" data-row-key="runner_id">
+        <thead><tr>
+          <th data-field="name" class="gp-ev">Runner</th>
+          <th data-field="total_runs">parkruns</th>
+          <th data-field="events_visited">Events</th>
+          <th data-field="sydney_done">Sydney events</th>
+          <th data-field="volunteer_credits">Vol credits</th>
+          <th data-field="credits_per_100">Credits / 100 runs</th>
+          <th data-field="fastest_time">Fastest</th>
+          <th data-field="fastest_event">Fastest at</th>
+          <th data-field="home_event">Most-run event</th>
+          <th data-field="home_runs">Runs there</th>
+        </tr></thead>
+        <tbody data-draw="score-table"></tbody>
+      </table>
+    </div>
+    <details>
+      <summary>About these numbers</summary>
+      <ul>
+        <li>Volunteer credits: one per day volunteered, from each parkrun profile.</li>
+        <li>Raefarer list: the 36 events in Greater Sydney council areas.</li>
+        <li>Drive times: OpenStreetMap routing with no traffic, so Saturday mornings may be slower.</li>
+        <li>NENDY distances: straight line from Cammeray to each event's start.</li>
+      </ul>
+    </details>
+  </section>
+</div>
+
+<script>
+  window.GP = {
+    order: ['judi', 'katie', 'mathew'],
+    names: { judi: 'Judi', katie: 'Katie', mathew: 'Mathew' },
+    home: [151.2117, -33.8217],
+    going: new Set(['judi', 'katie', 'mathew']),
+    who: 'all',
+    color: (key) => `var(--gp-${key})`
+  };
+
+  document.querySelectorAll('.gp-going').forEach((b) => {
+    b.addEventListener('click', () => {
+      const G = window.GP;
+      if (G.going.has(b.dataset.key)) G.going.delete(b.dataset.key); else G.going.add(b.dataset.key);
+      b.setAttribute('aria-pressed', String(G.going.has(b.dataset.key)));
+      dash.draw('going-table');
+    });
+  });
+  document.querySelectorAll('.gp-who').forEach((b) => {
+    b.addEventListener('click', () => {
+      window.GP.who = b.dataset.who;
+      document.querySelectorAll('.gp-who').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      dash.draw('map');
+    });
+  });
+</script>
+
+<script>
+  const fmt = d3.format(',');
+  const rowsOf = (id) => { const d = dash.data(id); return d.status === 'ok' && Array.isArray(d.data) ? d.data : null; };
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  dash.draw('tk', (node) => {
+    const c = rowsOf('combos');
+    const r = c && c.find((x) => x.combo === 'judi+katie+mathew' && x.rank === 1);
+    node.textContent = r ? String(r[node.dataset.field]) : '—';
+  });
+  dash.draw('asof', (node) => { const f = rowsOf('family'); node.textContent = f && f[0] ? d3.utcFormat('%-d %b %Y')(new Date(f[0].as_of + 'T00:00:00Z')) : '—'; });
+  dash.draw('fam', (node) => { const f = rowsOf('family'); node.textContent = f && f[0] ? fmt(f[0][node.dataset.field]) : '—'; });
+
+  const where = (node) => node.dataset.where.split('=')[1];
+  dash.draw('rf-val', (node) => {
+    const r = rowsOf('runners'); const row = r && r.find((x) => x.runner_id === where(node));
+    node.textContent = row ? String(row[node.dataset.field]) : '—';
+  });
+  dash.draw('rf-bar', (node) => {
+    const r = rowsOf('runners'); const row = r && r.find((x) => x.runner_id === node.dataset.runner);
+    node.replaceChildren();
+    if (!row) return;
+    const f = el('div', 'gp-bar-fill'); f.style.width = (100 * row.done_next / row.raefarer_total) + '%';
+    node.appendChild(f);
+    node.setAttribute('role', 'img');
+    node.setAttribute('aria-label', `${row.done_next} of ${row.raefarer_total} events done in round ${row.next_round}`);
+  });
+  dash.draw('rf-missing', (node) => {
+    const t = rowsOf('sydney_table');
+    node.replaceChildren();
+    if (!t) return;
+    const need = t.filter((e) => e['need_' + node.dataset.key] === 1).sort((a, b) => a.drive_mins - b.drive_mins);
+    const show = need.length > 9 ? need.slice(0, 8) : need;
+    show.forEach((e) => node.appendChild(el('li', null, e.event)));
+    if (need.length > show.length) node.appendChild(el('li', 'gp-more', `+${need.length - show.length} more`));
+  });
+
+  dash.draw('going-table', (tbody) => {
+    const G = window.GP;
+    const c = rowsOf('combos');
+    tbody.replaceChildren();
+    if (!c) return;
+    const combo = G.order.filter((k) => G.going.has(k)).join('+');
+    if (!combo) {
+      const tr = el('tr', 'gp-empty'); const td = el('td', null, 'Pick at least one person to rank events.'); td.colSpan = 7; tr.appendChild(td); tbody.appendChild(tr);
+      return;
+    }
+    const rows = c.filter((r) => r.combo === combo).sort((a, b) => a.rank - b.rank);
+    const best = rows.length ? rows[0].needed_by_going : 0;
+    for (const r of rows) {
+      const tr = el('tr', r.needed_by_going === 0 ? 'gp-done' : r.needed_by_going === best ? 'gp-top' : '');
+      tr.dataset.key = encodeURIComponent(r.combo) + ',' + encodeURIComponent(r.event);
+      tr.appendChild(el('td', 'gp-rank', String(r.rank)));
+      const name = el('td', 'gp-ev', r.event);
+      if (!r.counted) name.appendChild(el('span', 'gp-chip', 'nobody yet'));
+      tr.appendChild(name);
+      const nb = el('td', null, String(r.needed_by_going));
+      const pips = el('span', 'gp-pips'); pips.setAttribute('aria-hidden', 'true');
+      for (const k of G.order) {
+        if (r['need_' + k] !== 1) continue;
+        const i = el('i', G.going.has(k) ? '' : 'gp-hollow'); i.style.setProperty('--runner', G.color(k)); pips.appendChild(i);
+      }
+      nb.appendChild(pips);
+      tr.appendChild(nb);
+      tr.appendChild(el('td', null, String(r.drive_mins)));
+      for (const k of G.order) {
+        const td = el('td', 'gp-p' + (G.going.has(k) ? '' : ' gp-away'));
+        const n = r['runs_' + k];
+        td.appendChild(el('span', 'gp-c ' + (n === 0 ? 'gp-zero' : r['need_' + k] === 1 ? 'gp-need' : 'gp-ok'), String(n)));
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  });
+
+  dash.draw('score-table', (tbody) => {
+    const G = window.GP;
+    const s = rowsOf('runners');
+    tbody.replaceChildren();
+    if (!s) return;
+    const rows = [...s].sort((a, b) => G.order.indexOf(a.key) - G.order.indexOf(b.key));
+    const lead = ['total_runs', 'events_visited', 'sydney_done', 'volunteer_credits', 'credits_per_100'];
+    const max = Object.fromEntries(lead.map((f) => [f, Math.max(...rows.map((r) => r[f]))]));
+    for (const r of rows) {
+      const tr = el('tr'); tr.dataset.key = r.runner_id;
+      const name = el('td', 'gp-ev gp-' + r.key); name.appendChild(el('span', 'gp-swatch')); name.appendChild(document.createTextNode(r.name)); tr.appendChild(name);
+      const cells = [['total_runs', fmt(r.total_runs)], ['events_visited', String(r.events_visited)], ['sydney_done', String(r.sydney_done)], ['volunteer_credits', String(r.volunteer_credits)], ['credits_per_100', r.credits_per_100.toFixed(1)], ['fastest_time', r.fastest_time], ['fastest_event', r.fastest_event], ['home_event', r.home_event], ['home_runs', String(r.home_runs)]];
+      for (const [f, v] of cells) {
+        const td = el('td', null, v);
+        if (max[f] !== undefined && r[f] === max[f]) td.style.fontWeight = 'var(--cds-font-weight-medium)';
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  });
+
+  dash.draw('nendy-list', (ol) => {
+    const n = rowsOf('nendy');
+    ol.replaceChildren();
+    if (!n) return;
+    for (const r of n.filter((x) => x.key === ol.dataset.key).sort((a, b) => a.rank - b.rank)) {
+      const li = el('li', null, r.event); li.appendChild(el('span', null, `${r.dist_km.toFixed(1)} km`)); ol.appendChild(li);
+    }
+  });
+
+  // Rough outline of the coast (lon, lat), north to south, then out to sea.
+  const COAST = [[151.48, -33.42], [151.45, -33.45], [151.42, -33.50], [151.37, -33.52], [151.355, -33.545], [151.33, -33.58], [151.325, -33.63], [151.31, -33.68], [151.30, -33.72], [151.29, -33.75], [151.285, -33.78], [151.29, -33.80], [151.30, -33.815], [151.287, -33.835], [151.285, -33.86], [151.275, -33.89], [151.26, -33.92], [151.26, -33.95], [151.25, -33.99], [151.23, -34.03], [151.20, -34.04], [151.16, -34.05], [151.155, -34.07], [151.14, -34.09], [151.10, -34.15], [151.05, -34.20], [151.00, -34.25], [150.97, -34.28], [150.93, -34.33], [150.90, -34.40], [150.88, -34.50], [150.85, -34.60], [150.80, -34.80]];
+  const SEA = COAST.concat([[153.5, -34.80], [153.5, -33.42]]);
+  const HARBOUR = [[151.287, -33.835], [151.26, -33.845], [151.23, -33.855], [151.20, -33.852], [151.17, -33.847], [151.14, -33.842], [151.11, -33.838], [151.08, -33.832], [151.05, -33.823], [151.01, -33.816]];
+  const BOTANY = [[151.25, -33.99], [151.22, -33.965], [151.18, -33.955], [151.14, -33.97], [151.13, -33.99], [151.16, -34.01], [151.20, -34.025], [151.23, -34.03]];
+
+  dash.draw('map', (node) => {
+    const G = window.GP;
+    const ev = rowsOf('sydney_table');
+    const nd = rowsOf('nendy');
+    node.replaceChildren();
+    if (!ev || !nd) {
+      if (dash.data('sydney_table').status === 'error' || dash.data('nendy').status === 'error') { const p = el('p', 'gp-note', 'Failed to load'); p.style.padding = '16px'; node.appendChild(p); }
+      return;
+    }
+    const W = Math.max(280, node.clientWidth);
+    const H = Math.round(Math.min(Math.max(W * 0.85, 340), 620));
+    const picks = G.who === 'all' ? nd.filter((r) => r.rank === 1) : nd.filter((r) => r.key === G.who);
+    const pts = ev.map((e) => [e.lon, e.lat]).concat(picks.map((p) => [p.lon, p.lat]), [G.home]);
+    const proj = d3.geoMercator().fitExtent([[28, 28], [W - 28, H - 28]], { type: 'MultiPoint', coordinates: pts });
+    const line = d3.line().x((d) => proj(d)[0]).y((d) => proj(d)[1]);
+
+    const svg = d3.select(node).append('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+      .attr('aria-label', 'Map of Sydney parkruns showing which events the family still needs and each person\'s nearest events not yet run');
+    const clipId = 'gp-clip';
+    svg.append('clipPath').attr('id', clipId).append('rect').attr('width', W).attr('height', H);
+    const base = svg.append('g').attr('clip-path', `url(#${clipId})`);
+    base.append('rect').attr('width', W).attr('height', H).style('fill', 'var(--color-panel)');
+    const water = 'color-mix(in srgb, var(--cds-chart-grid) 70%, var(--color-panel))';
+    base.append('path').attr('d', line(SEA) + 'Z').style('fill', water).style('stroke', 'none');
+    base.append('path').attr('d', line(BOTANY) + 'Z').style('fill', water).style('stroke', 'none');
+    base.append('path').attr('d', line(HARBOUR)).style('fill', 'none').style('stroke', water).style('stroke-width', 4).style('stroke-linecap', 'round');
+    base.append('path').attr('d', line(COAST)).style('fill', 'none').style('stroke', 'var(--cds-chart-axis)').style('stroke-width', 1);
+
+    const tip = el('div', 'gp-tip'); tip.hidden = true; node.appendChild(tip);
+    const show = (evt, title, sub) => {
+      tip.replaceChildren(el('b', null, title), el('span', null, sub));
+      tip.hidden = false;
+      const box = node.getBoundingClientRect();
+      const x = Math.min(evt.clientX - box.left + 12, box.width - tip.offsetWidth - 6);
+      const y = Math.min(evt.clientY - box.top + 12, box.height - tip.offsetHeight - 6);
+      tip.style.left = Math.max(4, x) + 'px'; tip.style.top = Math.max(4, y) + 'px';
+    };
+    const hide = () => { tip.hidden = true; };
+
+    svg.append('g').selectAll('circle').data(ev).join('circle')
+      .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1]).attr('r', 5)
+      .style('fill', (d) => (d.needed_by > 0 ? 'var(--color-warn)' : 'var(--cds-chart-muted)'))
+      .style('stroke', 'var(--color-panel)').style('stroke-width', 1.5)
+      .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive`))
+      .on('pointerleave', hide);
+
+    const h = proj(G.home);
+    svg.append('rect').attr('x', h[0] - 5).attr('y', h[1] - 5).attr('width', 10).attr('height', 10).style('fill', 'var(--color-fg)');
+    svg.append('text').attr('x', h[0] + 9).attr('y', h[1] + 4).text('Cammeray')
+      .style('fill', 'var(--color-fg)').style('font-size', '11px').style('paint-order', 'stroke').style('stroke', 'var(--color-panel)').style('stroke-width', 3);
+
+    const groups = d3.groups(picks.sort((a, b) => G.order.indexOf(a.key) - G.order.indexOf(b.key)), (p) => p.event);
+    for (const [name, rows] of groups) {
+      const [x, y] = proj([rows[0].lon, rows[0].lat]);
+      const g = svg.append('g').attr('transform', `translate(${x},${y})`);
+      rows.forEach((r, i) => g.append('circle').attr('r', 10 + i * 4).style('fill', 'none').style('stroke', G.color(r.key)).style('stroke-width', 2.5));
+      if (G.who !== 'all') {
+        g.append('circle').attr('r', 8).style('fill', G.color(rows[0].key));
+        g.append('text').attr('text-anchor', 'middle').attr('dy', '0.35em').text(rows[0].rank)
+          .style('fill', '#fff').style('font-size', '10px').style('font-weight', 600);
+      }
+      const label = G.who === 'all' ? `${name} (${rows.map((r) => r.name).join(', ')})` : name;
+      const right = x < W * 0.7;
+      const off = 14 + rows.length * 4;
+      g.append('text').attr('x', right ? off : -off).attr('dy', '0.35em').attr('text-anchor', right ? 'start' : 'end').text(label)
+        .style('fill', 'var(--color-fg)').style('font-size', '12px').style('font-weight', 500)
+        .style('paint-order', 'stroke').style('stroke', 'var(--color-panel)').style('stroke-width', 3);
+      g.append('circle').attr('r', 14).style('fill', 'transparent')
+        .on('pointerenter pointermove', (evt) => show(evt, name, rows.map((r) => `${r.name}'s NENDY #${r.rank}`).join(' · ') + ` · ${rows[0].dist_km.toFixed(1)} km away`))
+        .on('pointerleave', hide);
+    }
+  });
+</script>

@@ -1,0 +1,326 @@
+[
+    {
+        "name":  "Auburn Botanic Gardens",
+        "slug":  "auburnbotanicgardens",
+        "loc":  "Auburn Botanic Gardens",
+        "lat":  -33.859877,
+        "lon":  151.015305,
+        "mins":  31,
+        "km":  28.6
+    },
+    {
+        "name":  "Australian Botanic Garden Mount Annan",
+        "slug":  "aubotanicgardenmountannan",
+        "loc":  "Australian Botanic Garden Mount Annan",
+        "lat":  -34.066408,
+        "lon":  150.766217,
+        "mins":  80,
+        "km":  70.4
+    },
+    {
+        "name":  "Cabarita",
+        "slug":  "cabarita",
+        "loc":  "Cabarita",
+        "lat":  -33.843131,
+        "lon":  151.115751,
+        "mins":  26,
+        "km":  20.6
+    },
+    {
+        "name":  "Campbelltown",
+        "slug":  "campbelltown",
+        "loc":  "Hurricane Drive",
+        "lat":  -34.018301,
+        "lon":  150.814819,
+        "mins":  53,
+        "km":  60.4
+    },
+    {
+        "name":  "Casula Parklands",
+        "slug":  "casulaparklands",
+        "loc":  "Casula Parklands",
+        "lat":  -33.948703,
+        "lon":  150.91369,
+        "mins":  42,
+        "km":  43.5
+    },
+    {
+        "name":  "Centennial",
+        "slug":  "centennial",
+        "loc":  "Centennial Park",
+        "lat":  -33.898808,
+        "lon":  151.228564,
+        "mins":  15,
+        "km":  11.9
+    },
+    {
+        "name":  "Chipping Norton",
+        "slug":  "chippingnorton",
+        "loc":  "Black Muscat Park",
+        "lat":  -33.909244,
+        "lon":  150.964108,
+        "mins":  44,
+        "km":  40.6
+    },
+    {
+        "name":  "Cooks River",
+        "slug":  "cooksriver",
+        "loc":  "Saint Mary Mackillop Reserve",
+        "lat":  -33.913708,
+        "lon":  151.116857,
+        "mins":  24,
+        "km":  17.7
+    },
+    {
+        "name":  "Cowpasture Reserve, Camden",
+        "slug":  "cowpasturereservecamden",
+        "loc":  "Nepean River Cycleway",
+        "lat":  -34.053665,
+        "lon":  150.700727,
+        "mins":  63,
+        "km":  71.0
+    },
+    {
+        "name":  "Cronulla",
+        "slug":  "cronulla",
+        "loc":  "Don Lucas Reserve",
+        "lat":  -34.040937,
+        "lon":  151.161836,
+        "mins":  39,
+        "km":  34.3
+    },
+    {
+        "name":  "Curl Curl",
+        "slug":  "curlcurl",
+        "loc":  "John Fisher Park",
+        "lat":  -33.766483,
+        "lon":  151.282339,
+        "mins":  21,
+        "km":  13.1
+    },
+    {
+        "name":  "Dolls Point",
+        "slug":  "dollspoint",
+        "loc":  "Peter Depena Reserve",
+        "lat":  -33.995775,
+        "lon":  151.144928,
+        "mins":  30,
+        "km":  25.3
+    },
+    {
+        "name":  "East Richmond",
+        "slug":  "eastrichmond",
+        "loc":  "Ham Common Bicentenary Park",
+        "lat":  -33.604814,
+        "lon":  150.774321,
+        "mins":  53,
+        "km":  56.6
+    },
+    {
+        "name":  "Elara Riparian Parklands",
+        "slug":  "elarariparianparklands",
+        "loc":  "Elara Riparian Parklands",
+        "lat":  -33.693933,
+        "lon":  150.803885,
+        "mins":  44,
+        "km":  48.8
+    },
+    {
+        "name":  "Galston",
+        "slug":  "galston",
+        "loc":  "Fagan Park",
+        "lat":  -33.642734,
+        "lon":  151.043648,
+        "mins":  40,
+        "km":  35.8
+    },
+    {
+        "name":  "GreenWay",
+        "slug":  "greenway",
+        "loc":  "Richard Murden Reserve",
+        "lat":  -33.882504,
+        "lon":  151.14457,
+        "mins":  17,
+        "km":  13.3
+    },
+    {
+        "name":  "Kamay",
+        "slug":  "kamay",
+        "loc":  "Yarra Bay Beach",
+        "lat":  -33.97993,
+        "lon":  151.229992,
+        "mins":  25,
+        "km":  21.0
+    },
+    {
+        "name":  "Macquarie University",
+        "slug":  "macquarieuniversity",
+        "loc":  "Macquarie University",
+        "lat":  -33.774425,
+        "lon":  151.114271,
+        "mins":  17,
+        "km":  14.3
+    },
+    {
+        "name":  "Menai",
+        "slug":  "menai",
+        "loc":  "Parc Menai",
+        "lat":  -34.016364,
+        "lon":  151.015082,
+        "mins":  39,
+        "km":  39.6
+    },
+    {
+        "name":  "Mosman",
+        "slug":  "mosman",
+        "loc":  "Spit West Reserve",
+        "lat":  -33.806252,
+        "lon":  151.245989,
+        "mins":  11,
+        "km":  6.2
+    },
+    {
+        "name":  "Nepean River",
+        "slug":  "nepeanriver",
+        "loc":  "Penrith",
+        "lat":  -33.761704,
+        "lon":  150.664414,
+        "mins":  55,
+        "km":  62.5
+    },
+    {
+        "name":  "North Sydney",
+        "slug":  "northsydney",
+        "loc":  "St Leonards Park",
+        "lat":  -33.830396,
+        "lon":  151.211772,
+        "mins":  4,
+        "km":  2.4
+    },
+    {
+        "name":  "Panania",
+        "slug":  "panania",
+        "loc":  "Field of Dreams Reserve",
+        "lat":  -33.945673,
+        "lon":  150.993483,
+        "mins":  34,
+        "km":  34.6
+    },
+    {
+        "name":  "Parramatta",
+        "slug":  "parramatta",
+        "loc":  "Eric Primrose Reserve",
+        "lat":  -33.820838,
+        "lon":  151.063534,
+        "mins":  25,
+        "km":  20.3
+    },
+    {
+        "name":  "Penrith Lakes",
+        "slug":  "penrithlakes",
+        "loc":  "Sydney International Regatta Centre",
+        "lat":  -33.725922,
+        "lon":  150.685741,
+        "mins":  60,
+        "km":  60.2
+    },
+    {
+        "name":  "Pirrama",
+        "slug":  "pirrama",
+        "loc":  "Pirrama",
+        "lat":  -33.865396,
+        "lon":  151.191857,
+        "mins":  10,
+        "km":  8.2
+    },
+    {
+        "name":  "Rhodes",
+        "slug":  "rhodes",
+        "loc":  "West Concord",
+        "lat":  -33.847462,
+        "lon":  151.081803,
+        "mins":  25,
+        "km":  21.3
+    },
+    {
+        "name":  "Rooty Hill",
+        "slug":  "rootyhill",
+        "loc":  "Blacktown Football Park",
+        "lat":  -33.783724,
+        "lon":  150.868394,
+        "mins":  41,
+        "km":  42.5
+    },
+    {
+        "name":  "Rouse Hill",
+        "slug":  "rousehill",
+        "loc":  "Rouse Hill Regional Park",
+        "lat":  -33.679301,
+        "lon":  150.911109,
+        "mins":  39,
+        "km":  41.7
+    },
+    {
+        "name":  "St Peters",
+        "slug":  "stpeters",
+        "loc":  "Sydney Park, St Peters, Sydney",
+        "lat":  -33.907658,
+        "lon":  151.18219,
+        "mins":  18,
+        "km":  13.5
+    },
+    {
+        "name":  "The Ponds",
+        "slug":  "theponds",
+        "loc":  "The Ponds Community Hub",
+        "lat":  -33.705952,
+        "lon":  150.909187,
+        "mins":  36,
+        "km":  38.8
+    },
+    {
+        "name":  "Wentworth Common",
+        "slug":  "wentworthcommon",
+        "loc":  "Wentworth Common",
+        "lat":  -33.837954,
+        "lon":  151.075107,
+        "mins":  25,
+        "km":  23.2
+    },
+    {
+        "name":  "Werrington Lakes Reserve",
+        "slug":  "werringtonlakesreserve",
+        "loc":  "Werrington Lakes Reserve",
+        "lat":  -33.755343,
+        "lon":  150.738658,
+        "mins":  52,
+        "km":  54.6
+    },
+    {
+        "name":  "Whalan Reserve",
+        "slug":  "whalanreserve",
+        "loc":  "Whalan Reserve",
+        "lat":  -33.75943,
+        "lon":  150.79587,
+        "mins":  47,
+        "km":  48.7
+    },
+    {
+        "name":  "Wildflower",
+        "slug":  "wildflower",
+        "loc":  "Ku-ring-gai Wildflower Garden",
+        "lat":  -33.705633,
+        "lon":  151.177321,
+        "mins":  40,
+        "km":  19.6
+    },
+    {
+        "name":  "Willoughby",
+        "slug":  "willoughby",
+        "loc":  "Artarmon Reserve",
+        "lat":  -33.811705,
+        "lon":  151.193171,
+        "mins":  6,
+        "km":  3.1
+    }
+]
