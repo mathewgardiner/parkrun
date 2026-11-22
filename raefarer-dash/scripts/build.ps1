@@ -5,6 +5,8 @@
 #   data/events.json         parkrun events feed (https://images.parkrun.com/events.json)
 #   data/sydney-events.json  the 36 Raefarer events + drive time from Cammeray (OSRM, free-flow)
 #   data/retired-events.json closed events: no "isn't in the current event feed" warning
+#   data/milestones.json     parkrun's milestone t-shirt counts, for runs and volunteer credits
+#   data/start-times.json    Saturday start time per event name (scripts/set-start-time.ps1)
 #   data/A<id>.txt           one per runner, copied from their public profile:
 #                              '# Name SURNAME (A123) ...'          first line
 #                              '# total: N'                         total parkruns
@@ -31,7 +33,15 @@
 #     1. most of G need it   2. fewest of the rest need it (save shared ones for later)
 #     3. shortest drive.
 #   NENDY: nearest event not run yet, straight line from Cammeray, any parkrun.
+#   Next milestone: the first count in data/milestones.json above the runner's total.
+#     Its date assumes a run on every coming Saturday, plus Christmas Day and New Year's
+#     Day when they aren't Saturdays (one result counts per day). The page can push it
+#     back by "parkruns I'll miss" using family.run_dates.
+#
+# -ListMissingStartTimes: only print the events the page shows that have no entry in
+#   data/start-times.json (with their parkrun page), and write nothing.
 
+param([switch]$ListMissingStartTimes)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $data = Join-Path $root 'data'
@@ -70,6 +80,16 @@ foreach ($f in $feed) {
 $retired = @{}
 $retiredPath = Join-Path $data 'retired-events.json'
 if (Test-Path $retiredPath) { Read-Json $retiredPath | % { $retired[$_] = $true } }
+# slug and site for each event (for start-time lookups)
+$slugOf = @{}
+foreach ($f in $feed) { $slugOf[($f.properties.EventLongName -replace ' parkrun', '')] = [pscustomobject]@{ slug = $f.properties.eventname; country = $f.properties.countrycode } }
+
+# ---- milestone t-shirts and Saturday start times
+$milestones = [System.IO.File]::ReadAllText((Join-Path $data 'milestones.json')) | ConvertFrom-Json
+$startTimes = @{}
+$stPath = Join-Path $data 'start-times.json'
+if (Test-Path $stPath) { ([System.IO.File]::ReadAllText($stPath) | ConvertFrom-Json).PSObject.Properties | % { $startTimes[$_.Name] = $_.Value } }
+function StartOf($ev) { if ($startTimes.Contains($ev)) { [string]$startTimes[$ev] } else { '' } }
 
 # ---- Raefarer list
 $sydney = Read-Json (Join-Path $data 'sydney-events.json') | % {
@@ -78,6 +98,7 @@ $sydney = Read-Json (Join-Path $data 'sydney-events.json') | % {
 
 # ---- runner files
 $runs = @{}      # runs[key][event] = count
+$best = @{}      # best[key][event] = PB at that event
 $info = @{}
 foreach ($m in $family) {
   $path = Join-Path $data "$($m.id).txt"
@@ -103,6 +124,7 @@ foreach ($m in $family) {
   foreach ($ev in $agg.Keys) { if (-not $byName[$ev] -and -not $retired[$ev]) { Write-Warning "$($m.id): '$ev' isn't in the current event feed (retired or renamed?)" } }
 
   $runs[$m.key] = @{}; foreach ($ev in $agg.Keys) { $runs[$m.key][$ev] = $agg[$ev].runs }
+  $best[$m.key] = @{}; foreach ($ev in $agg.Keys) { $best[$m.key][$ev] = $agg[$ev].best }
   $homeEv = $agg.Keys | sort { -$agg[$_].runs } | select -First 1
   $fast = $agg.Keys | sort { To-Sec $agg[$_].best } | select -First 1
   $info[$m.key] = [ordered]@{
@@ -112,6 +134,17 @@ foreach ($m in $family) {
   }
 }
 function RunsAt($key, $ev) { $v = $runs[$key][$ev]; if ($v) { [int]$v } else { 0 } }
+function PbAt($key, $ev) { $v = $best[$key][$ev]; if ($v) { [string]$v } else { '' } }
+
+# ---- upcoming parkrun days, for milestone dates
+# Every Saturday, plus Christmas Day and New Year's Day when they aren't Saturdays
+# (one result counts per day). Assumes a run on each, from the day after the build.
+$today = (Get-Date).Date
+$runDays = for ($d = $today.AddDays(1); $d -le $today.AddYears(3); $d = $d.AddDays(1)) {
+  $special = ($d.Month -eq 12 -and $d.Day -eq 25) -or ($d.Month -eq 1 -and $d.Day -eq 1)
+  if ($d.DayOfWeek -eq 'Saturday' -or $special) { $d }
+}
+function NextMilestone($list, $n) { $list | ? { $_ -gt $n } | select -First 1 }
 
 # ---- Raefarer rounds
 $counted = @($sydney | ? { $e = $_.event; @($family | ? { (RunsAt $_.key $e) -gt 0 }).Count -gt 0 })
@@ -126,19 +159,26 @@ $runnerRows = foreach ($m in $family) {
   $i.raefarer_total = $sydney.Count
   $i.sydney_done = @($sydney | ? { (RunsAt $m.key $_.event) -gt 0 }).Count
   $i.as_of = $asOf
+  $ms = NextMilestone $milestones.runs $i.total_runs
+  $i.next_milestone = [int]$ms
+  $i.runs_to_go = [int]($ms - $i.total_runs)
+  $i.milestone_date = if ($ms -and $i.runs_to_go -le $runDays.Count) { $runDays[$i.runs_to_go - 1].ToString('yyyy-MM-dd') } else { '' }
+  $vm = NextMilestone $milestones.volunteer $i.volunteer_credits
+  $i.next_vol_milestone = [int]$vm
+  $i.vol_to_go = [int]($vm - $i.volunteer_credits)
   [pscustomobject]$i
 }
 $nextOf = @{}; $runnerRows | % { $nextOf[$_.key] = $_.next_round }
 
 # ---- per-event table
 $table = foreach ($e in $sydney) {
-  $row = [ordered]@{ event = $e.event; drive_mins = $e.drive_mins; lat = $e.lat; lon = $e.lon
+  $row = [ordered]@{ event = $e.event; drive_mins = $e.drive_mins; start_time = (StartOf $e.event); lat = $e.lat; lon = $e.lon
     counted = [bool]($counted | ? { $_.event -eq $e.event }) }
   $needAny = 0
   foreach ($m in $family) {
     $n = RunsAt $m.key $e.event
     $need = [int]($n -lt $nextOf[$m.key])
-    $row["runs_$($m.key)"] = $n; $row["need_$($m.key)"] = $need; $needAny += $need
+    $row["runs_$($m.key)"] = $n; $row["need_$($m.key)"] = $need; $row["pb_$($m.key)"] = (PbAt $m.key $e.event); $needAny += $need
   }
   $row.needed_by = $needAny
   [pscustomobject]$row
@@ -159,8 +199,8 @@ for ($mask = 1; $mask -lt [math]::Pow(2, $family.Count); $mask++) {
   $rank = 0
   foreach ($x in $ranked) {
     $rank++
-    $row = [ordered]@{ combo = $combo; rank = $rank; event = $x.t.event; needed_by_going = $x.ng; going = $going.Count; needed_by_others = $x.no; drive_mins = $x.t.drive_mins; counted = $x.t.counted }
-    foreach ($m in $family) { $row["runs_$($m.key)"] = $x.t."runs_$($m.key)"; $row["need_$($m.key)"] = $x.t."need_$($m.key)" }
+    $row = [ordered]@{ combo = $combo; rank = $rank; event = $x.t.event; needed_by_going = $x.ng; going = $going.Count; needed_by_others = $x.no; drive_mins = $x.t.drive_mins; start_time = $x.t.start_time; counted = $x.t.counted }
+    foreach ($m in $family) { $row["runs_$($m.key)"] = $x.t."runs_$($m.key)"; $row["need_$($m.key)"] = $x.t."need_$($m.key)"; $row["pb_$($m.key)"] = $x.t."pb_$($m.key)" }
     $combos += [pscustomobject]$row
   }
 }
@@ -171,9 +211,18 @@ $nendy = foreach ($m in $family) {
   $rank = 0
   foreach ($e in ($nearby | ? { (RunsAt $m.key $_.event) -eq 0 } | select -First 5)) {
     $rank++
-    [pscustomobject]@{ runner_id = $m.id; key = $m.key; name = $info[$m.key].name; rank = $rank; event = $e.event; dist_km = $e.dist_km; lat = $e.lat; lon = $e.lon }
+    [pscustomobject]@{ runner_id = $m.id; key = $m.key; name = $info[$m.key].name; rank = $rank; event = $e.event; dist_km = $e.dist_km; start_time = (StartOf $e.event); lat = $e.lat; lon = $e.lon }
   }
 }
+
+# ---- events shown on the page with no start time yet (the weekly refresh looks these up)
+$missingStart = @(@($table | % { $_.event }) + @($nendy | % { $_.event }) | select -Unique | ? { -not (StartOf $_) })
+foreach ($ev in $missingStart) {
+  $s = $slugOf[$ev]
+  $site = if ($s.country -eq 65) { 'www.parkrun.co.nz' } else { 'www.parkrun.com.au' }
+  "MISSING START TIME: $ev | https://$site/$($s.slug)/"
+}
+if ($ListMissingStartTimes) { if (-not $missingStart.Count) { 'No start times missing' }; return }
 
 # ---- family totals
 $allEvents = @{}; foreach ($m in $family) { foreach ($ev in $runs[$m.key].Keys) { $allEvents[$ev] = 1 + [int]$allEvents[$ev] } }
@@ -183,6 +232,8 @@ $familyRow = [pscustomobject]@{
   shared_events = @($allEvents.Values | ? { $_ -eq $family.Count }).Count
   events_any = $allEvents.Count
   as_of = $asOf
+  # upcoming parkrun days, comma-separated: the page counts along this for "parkruns I'll miss"
+  run_dates = ($runDays | % { $_.ToString('yyyy-MM-dd') }) -join ','
 }
 
 # ---- what changed since the last build (for the weekly report)
@@ -197,7 +248,11 @@ if (Test-Path $prevPath) {
     if (-not $p) { continue }
     $bits = @()
     $d = $r.total_runs - $p.total_runs; if ($d) { $bits += "+$d parkrun(s), now $($r.total_runs)" }
+    $hit = $milestones.runs | ? { $_ -gt $p.total_runs -and $_ -le $r.total_runs } | select -Last 1
+    if ($hit) { $bits += "reached the $hit milestone!" }
     $d = $r.volunteer_credits - $p.volunteer_credits; if ($d) { $bits += "+$d volunteer credit(s)" }
+    $hit = $milestones.volunteer | ? { $_ -gt $p.volunteer_credits -and $_ -le $r.volunteer_credits } | select -Last 1
+    if ($hit) { $bits += "reached the v$hit milestone!" }
     if ($r.raefarer_finished -ne $p.raefarer_finished) { $bits += "Raefarer x$($p.raefarer_finished) -> x$($r.raefarer_finished)" }
     elseif ($r.done_next -ne $p.done_next) { $bits += "round $($r.next_round): $($p.done_next) -> $($r.done_next) of $($r.raefarer_total)" }
     $n1 = ($nendy | ? { $_.key -eq $r.key -and $_.rank -eq 1 }).event

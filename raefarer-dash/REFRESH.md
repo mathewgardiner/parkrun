@@ -15,6 +15,10 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/A<id>.txt` | One per runner, produced by `scripts/extract-profile.js`. |
 | `data/sydney-events.json` | The 36 Raefarer events, with drive time from Cammeray. |
 | `data/not-raefarer.json` | Nearby events already decided not to count (so they aren't flagged as new). |
+| `data/milestones.json` | parkrun's milestone t-shirt counts (25, 50, 100, 200, 250, then every 100 to 1000), for runs and volunteer credits. |
+| `data/start-times.json` | Saturday start time for each event shown on the page. Written by `scripts/set-start-time.ps1`. |
+| `scripts/extract-start-time.js` | Run on an event's parkrun page; returns its Saturday start time, e.g. `7:00am`. |
+| `scripts/set-start-time.ps1` | Saves one event's start time to `data/start-times.json`. |
 | `data/retired-events.json` | Closed events (e.g. Jindabyne Sport and Recreation): their runs still count, but `build.ps1` doesn't warn that they're missing from the feed. |
 | `data/events.json` | parkrun's event feed, downloaded by `refresh.ps1`. |
 | `scripts/build.ps1` | All the rules: Raefarer rounds, who's-going rankings, NENDYs, totals. Writes `dist/`. |
@@ -29,9 +33,10 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 
 1. **Copy the profiles.** For each runner, open `https://www.parkrun.com.au/parkrunner/<number>/` in the built-in browser. Wait a few seconds between pages. Run the contents of `scripts/extract-profile.js` with the browser's JavaScript tool, and write the returned text exactly as-is to `data/A<id>.txt`.
    - If the result starts with `ERROR`, or the page says "Let's confirm you are human", don't write the file. Ask the user to click Begin in the browser pane; never try to get around the check.
+   Then **fill in start times.** Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\build.ps1 -ListMissingStartTimes`. It writes nothing; it prints `MISSING START TIME: <event> | <url>` for each Sydney event or NENDY with no start time yet (usually none, or a new NENDY). For each line, open the url in the built-in browser, run `scripts/extract-start-time.js`, and if it returns a time (not `ERROR`), run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\set-start-time.ps1 -Event '<event>' -Time '<time>'`, using the event name exactly as printed. The human check rule above applies here too; if an event still can't be read, leave it (the page shows "—") and mention it in the report.
 2. **Build.** `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh.ps1`
    This also renders the share image, rebuilds the public copy, and commits and pushes it to GitHub.
-   Keep its `CHANGES SINCE LAST BUILD` lines, the `site published` line, and any `NEW EVENT NEAR SYDNEY` warning for the report.
+   Keep its `CHANGES SINCE LAST BUILD` lines (these include any milestone reached), the `site published` line, and any `NEW EVENT NEAR SYDNEY` warning for the report.
 3. **Upload** `dist\runners.json`, `dist\sydney_table.json`, `dist\combos.json`, `dist\nendy.json` and `dist\family.json`: one Artifact `publish` call each, with `url` = the dashboard, `asset: true` and `file_path`. Note each returned asset id.
 4. **Write the dataset updates.**
    `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\dataset-docs.ps1 -runners <id> -sydney_table <id> -combos <id> -nendy <id> -family <id>`

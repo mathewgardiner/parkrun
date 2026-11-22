@@ -31,6 +31,12 @@
   .gp-missing li { font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
   .gp-missing li.gp-more { border-style: dashed; color: var(--color-fg-muted); }
 
+  .gp-when { font-family: var(--font-anthropic-serif); font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+  .gp-miss { display: flex; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .gp-miss input { width: 4.5em; font: inherit; font-variant-numeric: tabular-nums; padding: 3px 6px; border: 1px solid var(--color-border-line); border-radius: 6px; background: var(--color-bg); color: var(--color-fg); }
+  .gp-miss input:focus-visible { outline: 2px solid var(--runner); outline-offset: 1px; }
+  .gp-pb { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: 2px; }
+
   .gp-seg { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: 999px; padding: 3px; gap: 3px; flex-wrap: wrap; justify-self: start; }
   .gp-seg button { font: inherit; font-size: var(--cds-font-size-caption); border: 0; background: transparent; color: var(--color-fg); padding: 5px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
   .gp-seg button[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); }
@@ -127,6 +133,34 @@
     </div>
   </section>
 
+  <section class="gp-section" id="milestones">
+    <h2>Next t-shirt</h2>
+    <p class="gp-note">parkrun milestones are at 25, 50, 100, 200, 250, then every 100 up to 1000, for runs and for volunteer credits. The date assumes a parkrun every Saturday, plus Christmas Day and New Year's Day. Enter any you'll miss to push it back.</p>
+    <div class="gp-cards">
+      <article class="gp-card gp-judi" id="ms-judi">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Judi</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="judi" data-part="ms" data-source="runners">—</span></div></div>
+        <p class="gp-when" data-draw="ms" data-key="judi" data-part="date" data-source="runners family">—</p>
+        <p data-draw="ms" data-key="judi" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="judi" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="judi" data-part="vol" data-source="runners">—</p>
+      </article>
+      <article class="gp-card gp-katie" id="ms-katie">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Katie</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="katie" data-part="ms" data-source="runners">—</span></div></div>
+        <p class="gp-when" data-draw="ms" data-key="katie" data-part="date" data-source="runners family">—</p>
+        <p data-draw="ms" data-key="katie" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="katie" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="katie" data-part="vol" data-source="runners">—</p>
+      </article>
+      <article class="gp-card gp-mathew" id="ms-mathew">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Mathew</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="mathew" data-part="ms" data-source="runners">—</span></div></div>
+        <p class="gp-when" data-draw="ms" data-key="mathew" data-part="date" data-source="runners family">—</p>
+        <p data-draw="ms" data-key="mathew" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="mathew" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="vol" data-source="runners">—</p>
+      </article>
+    </div>
+  </section>
+
   <section class="gp-section" id="events">
     <h2>Where to go next</h2>
     <p class="gp-note">Pick who's going. Ranked by how many of the group need it, then events the others have already done (saving shared ones for when you're all together), then drive time from Cammeray with no traffic.</p>
@@ -142,6 +176,7 @@
       <span><span class="gp-c gp-zero">0</span> never run</span>
       <span><span class="gp-c gp-need">1</span> needed this round</span>
       <span><span class="gp-c gp-ok">2</span> done this round</span>
+      <span>Time under each count is that person's PB there</span>
       <span><span class="gp-pips"><i class="gp-hollow" style="--runner: var(--color-fg-muted)"></i></span> not going, but needs it</span>
     </div>
     <div class="gp-scroll">
@@ -151,6 +186,7 @@
           <th data-field="event" class="gp-ev">Event</th>
           <th data-field="needed_by_going">Needed by</th>
           <th data-field="drive_mins">Drive (min)</th>
+          <th data-field="start_time">Starts</th>
           <th data-field="runs_judi" class="gp-p">Judi</th>
           <th data-field="runs_katie" class="gp-p">Katie</th>
           <th data-field="runs_mathew" class="gp-p">Mathew</th>
@@ -222,6 +258,7 @@
     names: { judi: 'Judi', katie: 'Katie', mathew: 'Mathew' },
     home: [151.2117, -33.8217],
     going: new Set(['judi', 'katie', 'mathew']),
+    missed: { judi: 0, katie: 0, mathew: 0 },
     who: 'all',
     color: (key) => `var(--gp-${key})`
   };
@@ -232,6 +269,13 @@
       if (G.going.has(b.dataset.key)) G.going.delete(b.dataset.key); else G.going.add(b.dataset.key);
       b.setAttribute('aria-pressed', String(G.going.has(b.dataset.key)));
       dash.draw('going-table');
+    });
+  });
+  document.querySelectorAll('.gp-miss-in').forEach((inp) => {
+    inp.addEventListener('input', () => {
+      const n = Math.floor(Number(inp.value));
+      window.GP.missed[inp.dataset.key] = Number.isFinite(n) && n > 0 ? Math.min(n, 150) : 0;
+      dash.draw('ms');
     });
   });
   document.querySelectorAll('.gp-who').forEach((b) => {
@@ -280,6 +324,22 @@
     if (need.length > show.length) node.appendChild(el('li', 'gp-more', `+${need.length - show.length} more`));
   });
 
+  // Milestone date: count along the build's list of upcoming parkrun days, skipping the ones you'll miss.
+  const dayFmt = d3.utcFormat('%a %-d %b %Y');
+  dash.draw('ms', (node) => {
+    const r = rowsOf('runners'); const row = r && r.find((x) => x.key === node.dataset.key);
+    if (!row || !row.next_milestone) { node.textContent = '—'; return; }
+    const part = node.dataset.part;
+    if (part === 'ms') { node.textContent = String(row.next_milestone); return; }
+    if (part === 'vol') { node.textContent = row.next_vol_milestone ? `v${row.next_vol_milestone}: ${row.vol_to_go} volunteer credit${row.vol_to_go === 1 ? '' : 's'} to go` : '—'; return; }
+    const f = rowsOf('family');
+    const days = f && f[0] && f[0].run_dates ? f[0].run_dates.split(',') : [];
+    const missed = window.GP.missed[row.key] || 0;
+    const day = days[row.runs_to_go - 1 + missed];
+    if (part === 'date') { node.textContent = day ? dayFmt(new Date(day + 'T00:00:00Z')) : 'More than 3 years away'; return; }
+    node.textContent = `${row.runs_to_go} parkrun${row.runs_to_go === 1 ? '' : 's'} to go` + (missed ? `, plus ${missed} missed` : '');
+  });
+
   dash.draw('going-table', (tbody) => {
     const G = window.GP;
     const c = rowsOf('combos');
@@ -287,7 +347,7 @@
     if (!c) return;
     const combo = G.order.filter((k) => G.going.has(k)).join('+');
     if (!combo) {
-      const tr = el('tr', 'gp-empty'); const td = el('td', null, 'Pick at least one person to rank events.'); td.colSpan = 7; tr.appendChild(td); tbody.appendChild(tr);
+      const tr = el('tr', 'gp-empty'); const td = el('td', null, 'Pick at least one person to rank events.'); td.colSpan = 8; tr.appendChild(td); tbody.appendChild(tr);
       return;
     }
     const rows = c.filter((r) => r.combo === combo).sort((a, b) => a.rank - b.rank);
@@ -308,10 +368,12 @@
       nb.appendChild(pips);
       tr.appendChild(nb);
       tr.appendChild(el('td', null, String(r.drive_mins)));
+      tr.appendChild(el('td', null, r.start_time || '—'));
       for (const k of G.order) {
         const td = el('td', 'gp-p' + (G.going.has(k) ? '' : ' gp-away'));
         const n = r['runs_' + k];
         td.appendChild(el('span', 'gp-c ' + (n === 0 ? 'gp-zero' : r['need_' + k] === 1 ? 'gp-need' : 'gp-ok'), String(n)));
+        if (r['pb_' + k]) td.appendChild(el('span', 'gp-pb', r['pb_' + k]));
         tr.appendChild(td);
       }
       tbody.appendChild(tr);
@@ -344,7 +406,7 @@
     ol.replaceChildren();
     if (!n) return;
     for (const r of n.filter((x) => x.key === ol.dataset.key).sort((a, b) => a.rank - b.rank)) {
-      const li = el('li', null, r.event); li.appendChild(el('span', null, `${r.dist_km.toFixed(1)} km`)); ol.appendChild(li);
+      const li = el('li', null, r.event); li.appendChild(el('span', null, `${r.dist_km.toFixed(1)} km` + (r.start_time ? ` · ${r.start_time}` : ''))); ol.appendChild(li);
     }
   });
 
@@ -397,7 +459,7 @@
       .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1]).attr('r', 5)
       .style('fill', (d) => (d.needed_by > 0 ? 'var(--color-warn)' : 'var(--cds-chart-muted)'))
       .style('stroke', 'var(--color-panel)').style('stroke-width', 1.5)
-      .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive`))
+      .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive` + (d.start_time ? ` · starts ${d.start_time}` : '')))
       .on('pointerleave', hide);
 
     const h = proj(G.home);
