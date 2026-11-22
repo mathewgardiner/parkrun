@@ -6,6 +6,7 @@
 #   data/sydney-events.json  the 36 Raefarer events + drive time from Cammeray (OSRM, free-flow)
 #   data/retired-events.json closed events: no "isn't in the current event feed" warning
 #   data/raefarer-latched.json  each runner's most Raefarer rounds finished (written by this build)
+#   data/history.json        family totals per build date, for the tiles' weekly change (written by this build)
 #   data/milestones.json     parkrun's milestone t-shirt counts, for runs and volunteer credits
 #   data/start-times.json    Saturday start time per event name (scripts/set-start-time.ps1)
 #   data/A<id>.txt           one per runner, copied from their public profile:
@@ -166,7 +167,7 @@ $runnerRows = foreach ($m in $family) {
   $i.next_round = $next
   $i.done_next = @($sydney | ? { (RunsAt $m.key $_.event) -ge $next }).Count
   $i.raefarer_total = $sydney.Count
-  $i.sydney_done = @($sydney | ? { (RunsAt $m.key $_.event) -gt 0 }).Count
+  $i.still_to_run = $sydney.Count - $i.done_next
   $i.as_of = $asOf
   $ms = NextMilestone $milestones.runs $i.total_runs
   $i.next_milestone = [int]$ms
@@ -245,6 +246,17 @@ $familyRow = [pscustomobject]@{
   run_dates = ($runDays | % { $_.ToString('yyyy-MM-dd') }) -join ','
 }
 
+# ---- weekly change on the family tiles: compare with the latest saved totals at least
+# 6 days older (data/history.json, one entry per build date, kept by this build)
+$histPath = Join-Path $data 'history.json'
+$hist = [ordered]@{}
+if (Test-Path $histPath) { ([System.IO.File]::ReadAllText($histPath) | ConvertFrom-Json).PSObject.Properties | sort Name | % { $hist[$_.Name] = $_.Value } }
+$tileFields = 'total_runs', 'volunteer_credits', 'shared_events', 'events_any'
+$cutoff = $today.AddDays(-6).ToString('yyyy-MM-dd')
+$baseDate = @($hist.Keys | ? { $_ -le $cutoff }) | select -Last 1
+$familyRow | Add-Member change_since $(if ($baseDate) { $baseDate } else { '' })
+foreach ($f in $tileFields) { $familyRow | Add-Member "$($f)_change" $(if ($baseDate) { [int]$familyRow.$f - [int]$hist[$baseDate].$f } else { $null }) }
+
 # ---- what changed since the last build (for the weekly report)
 $prevPath = Join-Path $dist 'runners.json'
 $prevNendyPath = Join-Path $dist 'nendy.json'
@@ -273,6 +285,9 @@ if (Test-Path $prevPath) {
 
 $latchOut = [ordered]@{}; foreach ($m in $family) { $latchOut[$m.key] = $latched[$m.key] }
 [System.IO.File]::WriteAllText($latchPath, ($latchOut | ConvertTo-Json) + "`n", (New-Object System.Text.UTF8Encoding $false))
+$snap = [ordered]@{}; foreach ($f in $tileFields) { $snap[$f] = [int]$familyRow.$f }
+$hist[$asOf] = [pscustomobject]$snap
+[System.IO.File]::WriteAllText($histPath, ($hist | ConvertTo-Json -Depth 3) + "`n", (New-Object System.Text.UTF8Encoding $false))
 
 Save 'runners.json' $runnerRows
 Save 'sydney_table.json' $table

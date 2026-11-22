@@ -1,9 +1,13 @@
 <meta name="dash-one-writer">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-  /* parkrun's look: Montserrat, aubergine + orange (+ teal), 5px corners, soft lift. Runner colours stay as they are. */
+  /* parkrun's look: Montserrat, aubergine + orange, 5px corners, soft lift. Runner colours stay as they are.
+     Orange is for Judi and the header highlights only; "needed this round" is aubergine (--pr-need),
+     mixed toward the text colour so it reads in light and dark. Section text is one short line each, with
+     the rules under "About these numbers" (the user prefers a little text over none). */
   .gp { --gp-judi: #e8792b; --gp-katie: #3a7fd0; --gp-mathew: #3a9a52;
-    --pr-aubergine: #2b233d; --pr-orange: #ffa300; --pr-teal: #00ceae; --pr-on-dark-muted: #c9c3d6;
+    --pr-aubergine: #2b233d; --pr-orange: #ffa300; --pr-on-dark-muted: #c9c3d6;
+    --pr-need: color-mix(in srgb, #5b4a80 70%, var(--color-fg));
     --cds-radius: 5px; --pr-shadow: 0 10px 24px rgba(43, 35, 61, .10);
     --pr-font: 'Montserrat', var(--font-anthropic-sans);
     display: grid; gap: var(--cds-gap-xl); font-family: var(--pr-font); color: var(--color-fg); }
@@ -17,7 +21,6 @@
   .gp-logo { width: 1.25em; height: 1.25em; flex: none; margin-left: -.2em; }
   .gp-head .gp-lede b { color: var(--pr-orange); font-weight: 700; }
   .gp-head .gp-meta { color: var(--pr-on-dark-muted); }
-  .gp-eyebrow { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .06em; text-transform: uppercase; }
   .gp-lede { font-size: var(--cds-font-size-body); line-height: 1.5; }
   .gp-meta, .gp-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.5; }
   .gp-section { display: grid; gap: var(--cds-gap-md); min-width: 0; }
@@ -26,22 +29,26 @@
   .gp-tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); box-shadow: var(--pr-shadow); }
   .gp-tile-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .gp-tile-value { font-family: var(--pr-font); font-weight: 700; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .gp-delta { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
 
-  .gp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: var(--cds-gap-md); }
+  .gp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--cds-gap-md); }
   .gp-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-top: 4px solid var(--runner); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); align-content: start; min-width: 0; box-shadow: var(--pr-shadow); }
   .gp-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .gp-card hr { border: 0; border-top: 1px solid var(--color-border-line); margin: var(--cds-gap-xs) 0; width: 100%; }
   .gp-judi { --runner: var(--gp-judi); } .gp-katie { --runner: var(--gp-katie); } .gp-mathew { --runner: var(--gp-mathew); }
   .gp-swatch { display: inline-block; width: .7em; height: .7em; border-radius: 50%; background: var(--runner); margin-right: .4em; }
   .gp-level { font-family: var(--pr-font); font-weight: 700; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
-  .gp-level small { font-family: var(--font-anthropic-sans); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-right: .3em; }
+  .gp-level small { font-family: var(--pr-font); font-weight: 500; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-right: .3em; }
+  .gp-row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .gp-k { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .gp-bar { height: 10px; border-radius: 5px; background: var(--cds-chart-grid); overflow: hidden; }
   .gp-bar-fill { height: 100%; border-radius: 5px; background: var(--runner); }
   .gp-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
-  .gp-missing { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
-  .gp-missing li { font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
-  .gp-missing li.gp-more { border-style: dashed; color: var(--color-fg-muted); }
+  .gp-stats { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.6; font-variant-numeric: tabular-nums; }
+  .gp-stats b { color: var(--color-fg); font-weight: 600; }
 
   .gp-when { font-family: var(--pr-font); font-weight: 700; font-size: var(--cds-font-size-heading); font-variant-numeric: tabular-nums; }
+  .gp-when small { font-weight: 500; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-right: .3em; }
   .gp-miss { display: flex; align-items: center; gap: var(--cds-gap-sm); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .gp-miss input { width: 4.5em; font: inherit; font-variant-numeric: tabular-nums; padding: 3px 6px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
   .gp-miss input:focus-visible { outline: 2px solid var(--runner); outline-offset: 1px; }
@@ -59,32 +66,55 @@
   .gp-table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
   .gp-table th, .gp-table td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
   .gp-table th:nth-child(-n+2), .gp-table td:nth-child(-n+2) { text-align: left; }
-  #scoreboard .gp-table th:nth-child(2), #scoreboard .gp-table td:nth-child(2) { text-align: right; }
   .gp-table thead th { font-size: var(--cds-font-size-caption); color: #fff; font-weight: 600; background: var(--pr-aubergine); border-bottom: 0; }
   .gp-table tbody tr:last-child td { border-bottom: 0; }
   .gp-table td.gp-rank { color: var(--color-fg-muted); width: 2.5em; }
   .gp-table .gp-ev { width: 100%; }
   .gp-table .gp-p { width: 5.5em; min-width: 5.5em; text-align: center !important; }
-  .gp-table tr.gp-top td { background: color-mix(in srgb, var(--color-warn) 9%, transparent); }
+  .gp-table tr.gp-top td { background: color-mix(in srgb, var(--pr-need) 8%, transparent); }
   .gp-table tr.gp-done td { color: var(--color-fg-muted); }
   .gp-table td.gp-away { opacity: .45; }
   .gp-c { display: inline-block; min-width: 2.1em; text-align: center; border-radius: 999px; padding: 1px 6px; }
   .gp-c.gp-zero { background: color-mix(in srgb, var(--color-bad) 18%, transparent); color: var(--color-bad); font-weight: var(--cds-font-weight-medium); }
-  .gp-c.gp-need { box-shadow: inset 0 0 0 1px var(--color-warn); }
+  .gp-c.gp-need { box-shadow: inset 0 0 0 1.5px var(--pr-need); font-weight: 600; }
   .gp-c.gp-ok { color: var(--color-fg-muted); }
   .gp-chip { font-size: var(--cds-font-size-caption); border-radius: 999px; padding: 1px 7px; margin-left: 6px; background: color-mix(in srgb, var(--color-ok) 16%, transparent); color: var(--color-ok); }
   .gp-pips { display: inline-flex; gap: 3px; vertical-align: middle; margin-left: 8px; }
   .gp-pips i { width: 9px; height: 9px; border-radius: 50%; background: var(--runner); box-sizing: border-box; }
   .gp-pips i.gp-hollow { background: transparent; border: 1.5px solid var(--runner); }
   .gp-empty td { text-align: left !important; color: var(--color-fg-muted); padding: 16px 10px; }
-  .gp-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); align-items: center; }
+  .gp-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-xs) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); align-items: center; }
   .gp-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Phones and tablets: each event becomes a small card (name; needed / drive / start; the three counts with PBs). */
+  @media (max-width: 900px) {
+    #events .gp-table thead { display: none; }
+    #events .gp-table, #events .gp-table tbody { display: block; }
+    #events .gp-table tr { display: grid; grid-template-columns: 1.6em repeat(3, minmax(0, 1fr)); gap: 6px 8px; padding: 10px 12px; border-bottom: 1px solid var(--color-border-line); }
+    #events .gp-table tbody tr:last-child { border-bottom: 0; }
+    #events .gp-table td { padding: 0; border: 0; text-align: left !important; white-space: normal; width: auto; min-width: 0; background: none !important; }
+    #events .gp-table tr.gp-top { background: color-mix(in srgb, var(--pr-need) 8%, transparent); }
+    #events .gp-table td.gp-rank { grid-column: 1; grid-row: 1; }
+    #events .gp-table td.gp-ev { grid-column: 2 / -1; grid-row: 1; font-weight: 600; }
+    #events .gp-table td.gp-nb { grid-column: 2; grid-row: 2; white-space: nowrap; }
+    #events .gp-table td.gp-dr { grid-column: 3; grid-row: 2; white-space: nowrap; }
+    #events .gp-table td.gp-dr::after { content: ' min'; }
+    #events .gp-table td.gp-st { grid-column: 4; grid-row: 2; white-space: nowrap; }
+    #events .gp-table td[data-label]::before { content: attr(data-label); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-right: 4px; }
+    #events .gp-table td.gp-p { grid-row: 3; display: grid; grid-template-columns: auto 1fr; column-gap: 6px; align-items: baseline; }
+    #events .gp-table td.gp-p::before { grid-column: 1 / -1; margin: 0 0 2px; }
+    #events .gp-table td.gp-p:nth-child(6) { grid-column: 2; }
+    #events .gp-table td.gp-p:nth-child(7) { grid-column: 3; }
+    #events .gp-table td.gp-p:nth-child(8) { grid-column: 4; }
+    #events .gp-table td.gp-p .gp-pb { display: inline; margin: 0; }
+    #events .gp-table td.gp-nb .gp-pips { margin-left: 4px; }
+  }
 
   .gp-mapwrap { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--cds-gap-lg); align-items: start; }
   @media (max-width: 760px) { .gp-mapwrap { grid-template-columns: 1fr; } }
   .gp-map { position: relative; min-height: 360px; background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); overflow: hidden; box-shadow: var(--pr-shadow); }
   .gp-map svg { display: block; width: 100%; height: auto; }
-  .gp-map text { font-family: var(--font-anthropic-sans); }
+  .gp-map text { font-family: var(--pr-font); }
   .gp-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 6px 9px; font-size: var(--cds-font-size-caption); max-width: 230px; z-index: 2; }
   .gp-tip b { display: block; color: var(--color-fg); }
   .gp-tip span { color: var(--cds-text-secondary); }
@@ -95,85 +125,29 @@
 
   .gp details { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
   .gp details summary { cursor: pointer; }
-  .gp details ul { margin: var(--cds-gap-sm) 0 0; padding-left: 1.2em; display: grid; gap: 4px; max-width: 75ch; }
+  .gp details ul { margin: var(--cds-gap-sm) 0 0; padding-left: 1.2em; display: grid; gap: 4px; max-width: 75ch; line-height: 1.5; }
   [data-dash-source-state=refreshing] { opacity: .5; }
 </style>
 
 <div class="gp">
   <header class="gp-head" id="top">
     <h1 class="gp-title"><svg class="gp-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2b233d"/><rect x="11" y="19" width="42" height="26" rx="13" fill="none" stroke="#ffa300" stroke-width="6"/><circle cx="40" cy="19" r="6.5" fill="#fff" stroke="#2b233d" stroke-width="2.5"/></svg>parkrun HQ</h1>
-    <p class="gp-lede" id="takeaway">Next outing for all three: <b data-draw="tk" data-field="event" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b>. Needed by <b data-draw="tk" data-field="needed_by_going" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> of you, about <b data-draw="tk" data-field="drive_mins" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> min from Cammeray.</p>
+    <p class="gp-lede" id="takeaway">Next outing for all three: <b data-draw="tk" data-field="event" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b>. Needed by <b data-draw="tk" data-field="needed_by_going" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> of you, about <b data-draw="tk" data-field="drive_mins" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> min from Cammeray, starts <b data-draw="tk" data-field="start_time" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b>.</p>
     <p class="gp-meta">Results to <span data-draw="asof" data-source="family" data-field="as_of" data-row="0">—</span> · Judi A7342171 · Katie A3947996 · Mathew A7157558</p>
   </header>
 
   <section class="gp-section" id="family">
     <div class="gp-tiles">
-      <div class="gp-tile"><span class="gp-tile-label">Family parkruns</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="total_runs" data-row="0">—</span></div>
-      <div class="gp-tile"><span class="gp-tile-label">Volunteer credits</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="volunteer_credits" data-row="0">—</span></div>
-      <div class="gp-tile"><span class="gp-tile-label">Events all 3 have run</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="shared_events" data-row="0">—</span></div>
-      <div class="gp-tile"><span class="gp-tile-label">Different events</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="events_any" data-row="0">—</span></div>
-    </div>
-  </section>
-
-  <section class="gp-section" id="raefarer">
-    <h2>Raefarer rounds</h2>
-    <p class="gp-note">A round is a run at all 36 Greater Sydney parkruns. The big number is rounds finished; the bar is progress on the next. An event none of you has run doesn't count yet. Once anyone runs it, it counts for everyone. A finished round stays finished: a new event joins the round you're working on, so you need it as many times as everything else in that round.</p>
-    <div class="gp-cards">
-      <article class="gp-card gp-judi" id="rf-judi">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Judi</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7342171">—</span></div></div>
-        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7342171">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7342171">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7342171">—</span> done</p>
-        <div class="gp-bar" data-draw="rf-bar" data-runner="A7342171" data-source="runners"></div>
-        <p class="gp-sub">Still to run, nearest first</p>
-        <ul class="gp-missing" data-draw="rf-missing" data-key="judi" data-source="sydney_table"></ul>
-      </article>
-      <article class="gp-card gp-katie" id="rf-katie">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Katie</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A3947996">—</span></div></div>
-        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A3947996">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A3947996">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A3947996">—</span> done</p>
-        <div class="gp-bar" data-draw="rf-bar" data-runner="A3947996" data-source="runners"></div>
-        <p class="gp-sub">Still to run, nearest first</p>
-        <ul class="gp-missing" data-draw="rf-missing" data-key="katie" data-source="sydney_table"></ul>
-      </article>
-      <article class="gp-card gp-mathew" id="rf-mathew">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Mathew</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7157558">—</span></div></div>
-        <p>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7157558">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7157558">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7157558">—</span> done</p>
-        <div class="gp-bar" data-draw="rf-bar" data-runner="A7157558" data-source="runners"></div>
-        <p class="gp-sub">Still to run, nearest first</p>
-        <ul class="gp-missing" data-draw="rf-missing" data-key="mathew" data-source="sydney_table"></ul>
-      </article>
-    </div>
-  </section>
-
-  <section class="gp-section" id="milestones">
-    <h2>Next t-shirt</h2>
-    <p class="gp-note">parkrun milestones are at 25, 50, 100, 200, 250, then every 100 up to 1000, for runs and for volunteer credits. The date assumes a parkrun every Saturday, plus Christmas Day and New Year's Day. Enter any you'll miss to push it back.</p>
-    <div class="gp-cards">
-      <article class="gp-card gp-judi" id="ms-judi">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Judi</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="judi" data-part="ms" data-source="runners">—</span></div></div>
-        <p class="gp-when" data-draw="ms" data-key="judi" data-part="date" data-source="runners family">—</p>
-        <p data-draw="ms" data-key="judi" data-part="togo" data-source="runners family">—</p>
-        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="judi" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
-        <p class="gp-sub" data-draw="ms" data-key="judi" data-part="vol" data-source="runners">—</p>
-      </article>
-      <article class="gp-card gp-katie" id="ms-katie">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Katie</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="katie" data-part="ms" data-source="runners">—</span></div></div>
-        <p class="gp-when" data-draw="ms" data-key="katie" data-part="date" data-source="runners family">—</p>
-        <p data-draw="ms" data-key="katie" data-part="togo" data-source="runners family">—</p>
-        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="katie" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
-        <p class="gp-sub" data-draw="ms" data-key="katie" data-part="vol" data-source="runners">—</p>
-      </article>
-      <article class="gp-card gp-mathew" id="ms-mathew">
-        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Mathew</h3><div class="gp-level"><small>Milestone</small><span data-draw="ms" data-key="mathew" data-part="ms" data-source="runners">—</span></div></div>
-        <p class="gp-when" data-draw="ms" data-key="mathew" data-part="date" data-source="runners family">—</p>
-        <p data-draw="ms" data-key="mathew" data-part="togo" data-source="runners family">—</p>
-        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="mathew" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
-        <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="vol" data-source="runners">—</p>
-      </article>
+      <div class="gp-tile"><span class="gp-tile-label">Family parkruns</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="total_runs" data-row="0">—</span><span class="gp-delta" data-draw="fam-delta" data-source="family" data-field="total_runs">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Volunteer credits</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="volunteer_credits" data-row="0">—</span><span class="gp-delta" data-draw="fam-delta" data-source="family" data-field="volunteer_credits">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Events all 3 have run</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="shared_events" data-row="0">—</span><span class="gp-delta" data-draw="fam-delta" data-source="family" data-field="shared_events">—</span></div>
+      <div class="gp-tile"><span class="gp-tile-label">Different events</span><span class="gp-tile-value" data-draw="fam" data-source="family" data-field="events_any" data-row="0">—</span><span class="gp-delta" data-draw="fam-delta" data-source="family" data-field="events_any">—</span></div>
     </div>
   </section>
 
   <section class="gp-section" id="events">
     <h2>Where to go next</h2>
-    <p class="gp-note">Pick who's going. Ranked by how many of the group need it, then events the others have already done (saving shared ones for when you're all together), then drive time from Cammeray with no traffic.</p>
+    <p class="gp-note">Ranked by who in the group needs it, then drive time from Cammeray.</p>
     <div class="gp-pick">
       <span class="gp-pick-label" id="going-label">Who's going</span>
       <div class="gp-seg" role="group" aria-labelledby="going-label">
@@ -184,10 +158,10 @@
     </div>
     <div class="gp-legend">
       <span><span class="gp-c gp-zero">0</span> never run</span>
-      <span><span class="gp-c gp-need">1</span> needed this round</span>
+      <span><span class="gp-c gp-need">1</span> needed</span>
       <span><span class="gp-c gp-ok">2</span> done this round</span>
-      <span>Time under each count is that person's PB there</span>
-      <span><span class="gp-pips"><i class="gp-hollow" style="--runner: var(--color-fg-muted)"></i></span> not going, but needs it</span>
+      <span><span class="gp-pips"><i class="gp-hollow" style="--runner: var(--color-fg-muted)"></i></span> not going, needs it</span>
+      <span>time = PB there</span>
     </div>
     <div class="gp-scroll">
       <table class="gp-table" data-source="combos" data-row-key="combo,event">
@@ -206,9 +180,54 @@
     </div>
   </section>
 
+  <section class="gp-section" id="people">
+    <h2>Each of you</h2>
+    <div class="gp-cards">
+      <article class="gp-card gp-judi" id="p-judi" data-key="judi" data-runner="A7342171">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Judi</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7342171">—</span></div></div>
+        <div class="gp-row"><span>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7342171">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7342171">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7342171">—</span></span><span class="gp-k"><span data-draw="rf-val" data-source="runners" data-field="still_to_run" data-where="runner_id=A7342171">—</span> to go</span></div>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A7342171" data-source="runners"></div>
+        <hr>
+        <div class="gp-row"><span class="gp-k">Next t-shirt</span><span class="gp-level" data-draw="ms" data-key="judi" data-part="ms" data-source="runners">—</span></div>
+        <p class="gp-when"><small>about</small><span data-draw="ms" data-key="judi" data-part="date" data-source="runners family">—</span></p>
+        <p class="gp-sub" data-draw="ms" data-key="judi" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="judi" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="judi" data-part="vol" data-source="runners">—</p>
+        <hr>
+        <p class="gp-stats" data-draw="pc-stats" data-key="judi" data-source="runners nendy">—</p>
+      </article>
+      <article class="gp-card gp-katie" id="p-katie" data-key="katie" data-runner="A3947996">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Katie</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A3947996">—</span></div></div>
+        <div class="gp-row"><span>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A3947996">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A3947996">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A3947996">—</span></span><span class="gp-k"><span data-draw="rf-val" data-source="runners" data-field="still_to_run" data-where="runner_id=A3947996">—</span> to go</span></div>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A3947996" data-source="runners"></div>
+        <hr>
+        <div class="gp-row"><span class="gp-k">Next t-shirt</span><span class="gp-level" data-draw="ms" data-key="katie" data-part="ms" data-source="runners">—</span></div>
+        <p class="gp-when"><small>about</small><span data-draw="ms" data-key="katie" data-part="date" data-source="runners family">—</span></p>
+        <p class="gp-sub" data-draw="ms" data-key="katie" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="katie" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="katie" data-part="vol" data-source="runners">—</p>
+        <hr>
+        <p class="gp-stats" data-draw="pc-stats" data-key="katie" data-source="runners nendy">—</p>
+      </article>
+      <article class="gp-card gp-mathew" id="p-mathew" data-key="mathew" data-runner="A7157558">
+        <div class="gp-card-top"><h3><span class="gp-swatch"></span>Mathew</h3><div class="gp-level"><small>Raefarer ×</small><span data-draw="rf-val" data-source="runners" data-field="raefarer_finished" data-where="runner_id=A7157558">—</span></div></div>
+        <div class="gp-row"><span>Round <span data-draw="rf-val" data-source="runners" data-field="next_round" data-where="runner_id=A7157558">—</span>: <span data-draw="rf-val" data-source="runners" data-field="done_next" data-where="runner_id=A7157558">—</span> of <span data-draw="rf-val" data-source="runners" data-field="raefarer_total" data-where="runner_id=A7157558">—</span></span><span class="gp-k"><span data-draw="rf-val" data-source="runners" data-field="still_to_run" data-where="runner_id=A7157558">—</span> to go</span></div>
+        <div class="gp-bar" data-draw="rf-bar" data-runner="A7157558" data-source="runners"></div>
+        <hr>
+        <div class="gp-row"><span class="gp-k">Next t-shirt</span><span class="gp-level" data-draw="ms" data-key="mathew" data-part="ms" data-source="runners">—</span></div>
+        <p class="gp-when"><small>about</small><span data-draw="ms" data-key="mathew" data-part="date" data-source="runners family">—</span></p>
+        <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="togo" data-source="runners family">—</p>
+        <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="mathew" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
+        <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="vol" data-source="runners">—</p>
+        <hr>
+        <p class="gp-stats" data-draw="pc-stats" data-key="mathew" data-source="runners nendy">—</p>
+      </article>
+    </div>
+  </section>
+
   <section class="gp-section" id="nendy">
     <h2>NENDY map</h2>
-    <p class="gp-note">Nearest Event Not Done Yet, in a straight line from Cammeray. Any parkrun counts. Pick a person to see their next five.</p>
+    <p class="gp-note">Nearest events not done yet, any parkrun, straight line from Cammeray.</p>
     <div class="gp-seg" role="group" aria-label="Show NENDYs for">
       <button type="button" class="gp-who" data-who="all" aria-pressed="true">Everyone</button>
       <button type="button" class="gp-who gp-judi" data-who="judi" aria-pressed="false"><span class="gp-swatch"></span>Judi</button>
@@ -224,42 +243,25 @@
       </div>
     </div>
     <div class="gp-legend">
-      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--color-warn)"></circle></svg> someone still needs it</span>
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--pr-need)"></circle></svg> someone still needs it</span>
       <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--cds-chart-muted)"></circle></svg> everyone's done it this round</span>
       <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" style="fill: var(--color-fg)"></rect></svg> Cammeray</span>
       <span>Coastline is approximate.</span>
     </div>
   </section>
 
-  <section class="gp-section" id="scoreboard">
-    <h2>Scoreboard</h2>
-    <div class="gp-scroll">
-      <table class="gp-table" data-source="runners" data-row-key="runner_id">
-        <thead><tr>
-          <th data-field="name" class="gp-ev">Runner</th>
-          <th data-field="total_runs">parkruns</th>
-          <th data-field="events_visited">Events</th>
-          <th data-field="sydney_done">Sydney events</th>
-          <th data-field="volunteer_credits">Vol credits</th>
-          <th data-field="credits_per_100">Credits / 100 runs</th>
-          <th data-field="fastest_time">Fastest</th>
-          <th data-field="fastest_event">Fastest at</th>
-          <th data-field="home_event">Most-run event</th>
-          <th data-field="home_runs">Runs there</th>
-        </tr></thead>
-        <tbody data-draw="score-table"></tbody>
-      </table>
-    </div>
-    <details>
-      <summary>About these numbers</summary>
-      <ul>
-        <li>Volunteer credits: one per day volunteered, from each parkrun profile.</li>
-        <li>Raefarer list: the 36 events in Greater Sydney council areas.</li>
-        <li>Drive times: OpenStreetMap routing with no traffic, so Saturday mornings may be slower.</li>
-        <li>NENDY distances: straight line from Cammeray to each event's start.</li>
-      </ul>
-    </details>
-  </section>
+  <details>
+    <summary>About these numbers</summary>
+    <ul>
+      <li>Raefarer: a round is a run at all 36 Greater Sydney parkruns. An event none of you has run doesn't count yet; once anyone runs it, it counts for everyone. A finished round stays finished, so a new event joins the round you're working on.</li>
+      <li>Where to go next: ranked by how many of the group need it, then events the others have already done (saving shared ones for when you're all together), then drive time.</li>
+      <li>Next t-shirt: parkrun milestones are 25, 50, 100, 200, 250, then every 100 to 1000, for runs and for volunteer credits. The date is a projection: a parkrun every Saturday plus Christmas Day and New Year's Day, minus any you say you'll miss.</li>
+      <li>Family tiles: change since the previous weekly refresh.</li>
+      <li>Volunteer credits: one per day volunteered, from each parkrun profile.</li>
+      <li>Drive times: OpenStreetMap routing with no traffic, so Saturday mornings may be slower. Start times are each event's usual Saturday start.</li>
+      <li>NENDY distances: straight line from Cammeray to each event's start.</li>
+    </ul>
+  </details>
 </div>
 
 <script>
@@ -301,19 +303,27 @@
   const fmt = d3.format(',');
   const rowsOf = (id) => { const d = dash.data(id); return d.status === 'ok' && Array.isArray(d.data) ? d.data : null; };
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const shortDay = d3.utcFormat('%-d %b');
 
   dash.draw('tk', (node) => {
     const c = rowsOf('combos');
     const r = c && c.find((x) => x.combo === 'judi+katie+mathew' && x.rank === 1);
-    node.textContent = r ? String(r[node.dataset.field]) : '—';
+    node.textContent = r && r[node.dataset.field] !== '' && r[node.dataset.field] != null ? String(r[node.dataset.field]) : '—';
   });
   dash.draw('asof', (node) => { const f = rowsOf('family'); node.textContent = f && f[0] ? d3.utcFormat('%-d %b %Y')(new Date(f[0].as_of + 'T00:00:00Z')) : '—'; });
   dash.draw('fam', (node) => { const f = rowsOf('family'); node.textContent = f && f[0] ? fmt(f[0][node.dataset.field]) : '—'; });
+  // Weekly change: neutral grey (these are volumes, not good/bad), against the previous weekly refresh.
+  dash.draw('fam-delta', (node) => {
+    const f = rowsOf('family'); const r = f && f[0];
+    const d = r ? r[node.dataset.field + '_change'] : null;
+    if (!r || d == null || !r.change_since) { node.textContent = ' '; return; }
+    node.textContent = `${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(d)} since ${shortDay(new Date(r.change_since + 'T00:00:00Z'))}`;
+  });
 
   const where = (node) => node.dataset.where.split('=')[1];
   dash.draw('rf-val', (node) => {
     const r = rowsOf('runners'); const row = r && r.find((x) => x.runner_id === where(node));
-    node.textContent = row ? String(row[node.dataset.field]) : '—';
+    node.textContent = row && row[node.dataset.field] != null ? String(row[node.dataset.field]) : '—';
   });
   dash.draw('rf-bar', (node) => {
     const r = rowsOf('runners'); const row = r && r.find((x) => x.runner_id === node.dataset.runner);
@@ -323,15 +333,6 @@
     node.appendChild(f);
     node.setAttribute('role', 'img');
     node.setAttribute('aria-label', `${row.done_next} of ${row.raefarer_total} events done in round ${row.next_round}`);
-  });
-  dash.draw('rf-missing', (node) => {
-    const t = rowsOf('sydney_table');
-    node.replaceChildren();
-    if (!t) return;
-    const need = t.filter((e) => e['need_' + node.dataset.key] === 1).sort((a, b) => a.drive_mins - b.drive_mins);
-    const show = need.length > 9 ? need.slice(0, 8) : need;
-    show.forEach((e) => node.appendChild(el('li', null, e.event)));
-    if (need.length > show.length) node.appendChild(el('li', 'gp-more', `+${need.length - show.length} more`));
   });
 
   // Milestone date: count along the build's list of upcoming parkrun days, skipping the ones you'll miss.
@@ -346,8 +347,27 @@
     const days = f && f[0] && f[0].run_dates ? f[0].run_dates.split(',') : [];
     const missed = window.GP.missed[row.key] || 0;
     const day = days[row.runs_to_go - 1 + missed];
-    if (part === 'date') { node.textContent = day ? dayFmt(new Date(day + 'T00:00:00Z')) : 'More than 3 years away'; return; }
-    node.textContent = `${row.runs_to_go} parkrun${row.runs_to_go === 1 ? '' : 's'} to go` + (missed ? `, plus ${missed} missed` : '');
+    if (part === 'date') { node.textContent = day ? dayFmt(new Date(day + 'T00:00:00Z')) : 'more than 3 years away'; return; }
+    node.textContent = `${row.runs_to_go} parkrun${row.runs_to_go === 1 ? '' : 's'} to go, ` + (missed ? `missing ${missed}` : `if you don't miss any`);
+  });
+
+  dash.draw('pc-stats', (node) => {
+    const r = rowsOf('runners'); const row = r && r.find((x) => x.key === node.dataset.key);
+    const n = rowsOf('nendy'); const top = n && n.find((x) => x.key === node.dataset.key && x.rank === 1);
+    node.replaceChildren();
+    if (!row) { node.textContent = '—'; return; }
+    const add = (label, value) => { if (node.childNodes.length) node.appendChild(document.createTextNode(' · ')); node.appendChild(document.createTextNode(label ? label + ' ' : '')); node.appendChild(el('b', null, value)); };
+    add('', fmt(row.total_runs)); node.appendChild(document.createTextNode(' parkruns'));
+    add('', String(row.events_visited)); node.appendChild(document.createTextNode(' events'));
+    add('', String(row.volunteer_credits)); node.appendChild(document.createTextNode(' vol credits'));
+    node.appendChild(el('br'));
+    node.appendChild(document.createTextNode('Fastest ')); node.appendChild(el('b', null, row.fastest_time)); node.appendChild(document.createTextNode(` at ${row.fastest_event}`));
+    node.appendChild(document.createTextNode(' · Most at ')); node.appendChild(el('b', null, row.home_event)); node.appendChild(document.createTextNode(` (${row.home_runs})`));
+    if (top) {
+      node.appendChild(el('br'));
+      node.appendChild(document.createTextNode('NENDY ')); node.appendChild(el('b', null, top.event));
+      node.appendChild(document.createTextNode(` · ${top.dist_km.toFixed(1)} km · ${top.start_time || '—'}`));
+    }
   });
 
   dash.draw('going-table', (tbody) => {
@@ -369,7 +389,7 @@
       const name = el('td', 'gp-ev', r.event);
       if (!r.counted) name.appendChild(el('span', 'gp-chip', 'nobody yet'));
       tr.appendChild(name);
-      const nb = el('td', null, String(r.needed_by_going));
+      const nb = el('td', 'gp-nb', String(r.needed_by_going)); nb.dataset.label = 'Need';
       const pips = el('span', 'gp-pips'); pips.setAttribute('aria-hidden', 'true');
       for (const k of G.order) {
         if (r['need_' + k] !== 1) continue;
@@ -377,34 +397,14 @@
       }
       nb.appendChild(pips);
       tr.appendChild(nb);
-      tr.appendChild(el('td', null, String(r.drive_mins)));
-      tr.appendChild(el('td', null, r.start_time || '—'));
+      const dr = el('td', 'gp-dr', String(r.drive_mins)); dr.dataset.label = 'Drive'; tr.appendChild(dr);
+      const st = el('td', 'gp-st', r.start_time || '—'); st.dataset.label = 'Start'; tr.appendChild(st);
       for (const k of G.order) {
         const td = el('td', 'gp-p' + (G.going.has(k) ? '' : ' gp-away'));
+        td.dataset.label = G.names[k];
         const n = r['runs_' + k];
         td.appendChild(el('span', 'gp-c ' + (n === 0 ? 'gp-zero' : r['need_' + k] === 1 ? 'gp-need' : 'gp-ok'), String(n)));
         if (r['pb_' + k]) td.appendChild(el('span', 'gp-pb', r['pb_' + k]));
-        tr.appendChild(td);
-      }
-      tbody.appendChild(tr);
-    }
-  });
-
-  dash.draw('score-table', (tbody) => {
-    const G = window.GP;
-    const s = rowsOf('runners');
-    tbody.replaceChildren();
-    if (!s) return;
-    const rows = [...s].sort((a, b) => G.order.indexOf(a.key) - G.order.indexOf(b.key));
-    const lead = ['total_runs', 'events_visited', 'sydney_done', 'volunteer_credits', 'credits_per_100'];
-    const max = Object.fromEntries(lead.map((f) => [f, Math.max(...rows.map((r) => r[f]))]));
-    for (const r of rows) {
-      const tr = el('tr'); tr.dataset.key = r.runner_id;
-      const name = el('td', 'gp-ev gp-' + r.key); name.appendChild(el('span', 'gp-swatch')); name.appendChild(document.createTextNode(r.name)); tr.appendChild(name);
-      const cells = [['total_runs', fmt(r.total_runs)], ['events_visited', String(r.events_visited)], ['sydney_done', String(r.sydney_done)], ['volunteer_credits', String(r.volunteer_credits)], ['credits_per_100', r.credits_per_100.toFixed(1)], ['fastest_time', r.fastest_time], ['fastest_event', r.fastest_event], ['home_event', r.home_event], ['home_runs', String(r.home_runs)]];
-      for (const [f, v] of cells) {
-        const td = el('td', null, v);
-        if (max[f] !== undefined && r[f] === max[f]) td.style.fontWeight = 'var(--cds-font-weight-medium)';
         tr.appendChild(td);
       }
       tbody.appendChild(tr);
@@ -416,7 +416,7 @@
     ol.replaceChildren();
     if (!n) return;
     for (const r of n.filter((x) => x.key === ol.dataset.key).sort((a, b) => a.rank - b.rank)) {
-      const li = el('li', null, r.event); li.appendChild(el('span', null, `${r.dist_km.toFixed(1)} km` + (r.start_time ? ` · ${r.start_time}` : ''))); ol.appendChild(li);
+      const li = el('li', null, r.event); li.appendChild(el('span', null, `${r.dist_km.toFixed(1)} km · ${r.start_time || '—'}`)); ol.appendChild(li);
     }
   });
 
@@ -467,7 +467,7 @@
 
     svg.append('g').selectAll('circle').data(ev).join('circle')
       .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1]).attr('r', 5)
-      .style('fill', (d) => (d.needed_by > 0 ? 'var(--color-warn)' : 'var(--cds-chart-muted)'))
+      .style('fill', (d) => (d.needed_by > 0 ? 'var(--pr-need)' : 'var(--cds-chart-muted)'))
       .style('stroke', 'var(--color-panel)').style('stroke-width', 1.5)
       .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive` + (d.start_time ? ` · starts ${d.start_time}` : '')))
       .on('pointerleave', hide);

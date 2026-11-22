@@ -15,6 +15,7 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/A<id>.txt` | One per runner, produced by `scripts/extract-profile.js`. |
 | `data/sydney-events.json` | The 36 Raefarer events, with drive time from Cammeray. |
 | `data/not-raefarer.json` | Nearby events already decided not to count (so they aren't flagged as new). |
+| `data/history.json` | Family totals per build date. `build.ps1` adds an entry each build and compares with the latest one at least 6 days older for the "+3 since 15 Nov" lines on the family tiles. Don't edit it by hand. |
 | `data/raefarer-latched.json` | Each runner's most Raefarer rounds finished. `build.ps1` keeps it up to date, so a new event never takes a finished round away. Don't edit it by hand. |
 | `data/milestones.json` | parkrun's milestone t-shirt counts (25, 50, 100, 200, 250, then every 100 to 1000), for runs and volunteer credits. |
 | `data/start-times.json` | Saturday start time for each event shown on the page. Written by `scripts/set-start-time.ps1`. |
