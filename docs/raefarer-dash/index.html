@@ -312,7 +312,7 @@
       <button type="button" class="gp-who gp-mathew" data-who="mathew" aria-pressed="false"><span class="gp-swatch"></span>Mathew</button>
     </div>
     <div class="gp-mapwrap">
-      <div class="gp-map" id="nendy-map" data-draw="map" data-source="sydney_table nendy"></div>
+      <div class="gp-map" id="nendy-map" data-draw="map" data-source="sydney_table nendy runners"></div>
       <div class="gp-nendys">
         <div class="gp-nendy gp-judi" id="nendy-judi"><h3><span class="gp-swatch"></span>Judi's NENDYs</h3><ol data-draw="nendy-list" data-key="judi" data-source="nendy"></ol></div>
         <div class="gp-nendy gp-katie" id="nendy-katie"><h3><span class="gp-swatch"></span>Katie's NENDYs</h3><ol data-draw="nendy-list" data-key="katie" data-source="nendy"></ol></div>
@@ -320,8 +320,8 @@
       </div>
     </div>
     <div class="gp-legend">
-      <span><svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" style="fill: var(--pr-need)"></circle></svg> someone still needs it</span>
-      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" style="fill: var(--cds-chart-muted); opacity: .7"></circle></svg> everyone's done it this round</span>
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--pr-need)"></circle></svg> <span id="map-need-label">someone still needs it</span></span>
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--cds-chart-muted)"></circle></svg> <span id="map-done-label">everyone's done it this round</span></span>
       <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" style="fill: var(--color-fg)"></rect></svg> Cammeray</span>
       <span>Coastline is approximate.</span>
     </div>
@@ -527,6 +527,11 @@
       if (dash.data('sydney_table').status === 'error' || dash.data('nendy').status === 'error') { const p = el('p', 'gp-note', 'Failed to load'); p.style.padding = '16px'; node.appendChild(p); }
       return;
     }
+    // Legend follows the picked person: "Judi still needs it for round 3".
+    const rr = rowsOf('runners'); const me = G.who !== 'all' && rr ? rr.find((x) => x.key === G.who) : null;
+    const nl = document.getElementById('map-need-label'), dl = document.getElementById('map-done-label');
+    if (nl) nl.textContent = me ? `${me.name} still needs it for round ${me.next_round}` : 'someone still needs it';
+    if (dl) dl.textContent = me ? `${me.name} has done it ${me.next_round}+ times` : "everyone's done it this round";
     const W = Math.max(280, node.clientWidth);
     const H = Math.round(Math.min(Math.max(W * 0.85, 340), 620));
     const picks = G.who === 'all' ? nd.filter((r) => r.rank === 1) : nd.filter((r) => r.key === G.who);
@@ -557,14 +562,14 @@
     };
     const hide = () => { tip.hidden = true; };
 
-    // Needed events stand out: one size of violet dot, drawn above the small faded "everyone's done it" dots.
-    const evOrdered = [...ev].sort((a, b) => a.needed_by - b.needed_by);
+    // Violet = still needed: by anyone (Everyone), or by the picked person for their current round.
+    // All dots are one size; needed ones are drawn on top.
+    const needs = (d) => (G.who === 'all' ? d.needed_by > 0 : d['need_' + G.who] === 1);
+    const evOrdered = [...ev].sort((a, b) => needs(a) - needs(b));
     svg.append('g').selectAll('circle').data(evOrdered).join('circle')
-      .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1])
-      .attr('r', (d) => (d.needed_by > 0 ? 7 : 3.5))
-      .style('fill', (d) => (d.needed_by > 0 ? 'var(--pr-need)' : 'var(--cds-chart-muted)'))
-      .style('opacity', (d) => (d.needed_by > 0 ? 1 : 0.7))
-      .style('stroke', 'var(--color-panel)').style('stroke-width', (d) => (d.needed_by > 0 ? 2 : 1))
+      .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1]).attr('r', 5)
+      .style('fill', (d) => (needs(d) ? 'var(--pr-need)' : 'var(--cds-chart-muted)'))
+      .style('stroke', 'var(--color-panel)').style('stroke-width', 1.5)
       .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive` + (d.start_time ? ` · starts ${d.start_time}` : '')))
       .on('pointerleave', hide);
 
