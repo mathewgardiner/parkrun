@@ -19,29 +19,32 @@ $html = @"
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>parkrun HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 <style>
   :root {
-    --color-fg: #1d1f1c; --color-fg-muted: #6b6d66; --color-bg: #f6f4ef; --color-panel: #ffffff;
-    --color-border-line: #e3e0d8; --color-ok: #2f8a4a; --color-warn: #c98a12; --color-bad: #c2412d;
-    --font-anthropic-sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    --color-fg: #272727; --color-fg-muted: #666666; --color-bg: #f2f1f5; --color-panel: #ffffff;
+    --color-border-line: #e4e2ea; --color-ok: #2f8a4a; --color-warn: #e89400; --color-bad: #c2412d;
+    --font-anthropic-sans: "Montserrat", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
     --font-anthropic-serif: Georgia, "Times New Roman", serif;
     --cds-font-size-caption: 13px; --cds-font-size-body: 15px; --cds-font-size-heading: 20px; --cds-font-size-title: 30px;
     --cds-font-weight-medium: 600;
     --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 14px; --cds-gap-lg: 20px; --cds-gap-xl: 32px;
     --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 12px; --cds-pad-lg: 18px; --cds-pad-xl: 28px;
     --cds-radius: 10px;
-    --cds-chart-grid: #e9e6de; --cds-chart-axis: #b9b5aa; --cds-chart-muted: #c6c2b8;
-    --cds-surface-popover: #ffffff; --cds-border: #ddd9cf; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.12);
-    --cds-text-secondary: #6b6d66;
+    --cds-chart-grid: #e7e5ee; --cds-chart-axis: #b5b0c2; --cds-chart-muted: #c4c0d0;
+    --cds-surface-popover: #ffffff; --cds-border: #dcd9e4; --cds-shadow-popover: 0 4px 16px rgba(43,35,61,.14);
+    --cds-text-secondary: #666666;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-fg: #ecebe6; --color-fg-muted: #a3a29b; --color-bg: #1b1c1a; --color-panel: #252623;
-      --color-border-line: #383934; --color-ok: #5cbf78; --color-warn: #e0a83a; --color-bad: #e8705c;
-      --cds-chart-grid: #34352f; --cds-chart-axis: #5d5e57; --cds-chart-muted: #55564f;
-      --cds-surface-popover: #2c2d2a; --cds-border: #44453f; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.5);
-      --cds-text-secondary: #a3a29b;
+      --color-fg: #f1eef6; --color-fg-muted: #b5adc4; --color-bg: #17131f; --color-panel: #231d30;
+      --color-border-line: #3a3249; --color-ok: #5cbf78; --color-warn: #ffa300; --color-bad: #e8705c;
+      --cds-chart-grid: #342c44; --cds-chart-axis: #5e5572; --cds-chart-muted: #574e69;
+      --cds-surface-popover: #2b233d; --cds-border: #463d58; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.5);
+      --cds-text-secondary: #b5adc4;
       color-scheme: dark;
     }
   }
