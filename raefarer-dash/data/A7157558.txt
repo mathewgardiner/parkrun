@@ -1,5 +1,5 @@
-# Mathew (A7157558) — fetched 2026-11-15 from https://www.parkrun.com.au/parkrunner/7157558/ (Event Summaries)
-# total: 178
+# Mathew (A7157558) — fetched 2026-11-22 from https://www.parkrun.com.au/parkrunner/7157558/ (Event Summaries)
+# total: 179
 # Volunteer credits: 18
 # Volunteer roles: Timekeeper 3, Token Sorting 1, Photographer 2, Marshal 4, Pre-event Setup 1, Barcode Scanning 5, Finish Tokens 2, Funnel Manager 1, Event Day Course Check 1
 # Event|Runs|BestTime
@@ -106,3 +106,4 @@ Sandon Point|1|22:21
 Cairns|1|27:08
 Sky River Path|1|20:56
 Newport Lakes|1|23:05
+Cabarita|1|21:08

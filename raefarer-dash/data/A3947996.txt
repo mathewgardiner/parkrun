@@ -1,5 +1,5 @@
-# Katie (A3947996) — fetched 2026-11-15 from https://www.parkrun.com.au/parkrunner/3947996/ (Event Summaries)
-# total: 183
+# Katie (A3947996) — fetched 2026-11-22 from https://www.parkrun.com.au/parkrunner/3947996/ (Event Summaries)
+# total: 184
 # Volunteer credits: 19
 # Volunteer roles: Timekeeper 1, Token Sorting 6, Marshal 3, Other 1, Barcode Scanning 3, Funnel Manager 1, Tail Walker 3, parkwalker 1
 # Event|Runs|BestTime
@@ -41,9 +41,8 @@ Rouse Hill|2|26:32
 Cronulla|2|27:38
 Casula Parklands|2|22:45
 Chipping Norton|2|21:56
-Pioneer Dairy|1|30:12
-Albert, Melbourne|1|25:51
 San Remo|1|22:58
+Hikarigaoka koen|1|24:04
 Reddall Reserve|1|22:21
 Queens Domain|1|24:14
 Zeehan Golf Club|1|24:32
@@ -53,9 +52,11 @@ Lawson|1|25:24
 Sandon Point|1|22:43
 Studley|1|24:20
 Port Macquarie|1|22:49
+Cabarita|1|22:33
+Pioneer Dairy|1|30:12
 The Entrance|1|27:34
 Gardiners Creek|1|26:06
-Hikarigaoka koen|1|24:04
+Albert, Melbourne|1|25:51
 Lithgow|1|24:42
 Woy Woy|1|25:04
 Batemans Bay|1|26:59
