@@ -37,6 +37,8 @@
 #     1. most of G need it   2. fewest of the rest need it (save shared ones for later)
 #     3. shortest drive.
 #   NENDY: nearest event not run yet, straight line from Cammeray, any parkrun.
+#   Volunteer rate: credits / parkruns should be at least 10% ($volTargetPct). Below it, the page
+#     flags the runner with the credits needed to get back (ceil(runs / 10) - credits).
 #   Next milestone: the first count in data/milestones.json above the runner's total.
 #     Its date assumes a run on every coming Saturday, plus Christmas Day and New Year's
 #     Day when they aren't Saturdays (one result counts per day). The page can push it
@@ -59,6 +61,7 @@ $family = @(
   [pscustomobject]@{ id = 'A7157558'; key = 'mathew' }
 )
 $homeLat = -33.8217; $homeLon = 151.2117   # Cammeray
+$volTargetPct = 10   # volunteer credits should be at least this % of parkruns
 
 function Get-Km($lat, $lon) {
   $r = [math]::PI / 180; $dLat = ($lat - $homeLat) * $r; $dLon = ($lon - $homeLon) * $r
@@ -173,6 +176,10 @@ $runnerRows = foreach ($m in $family) {
   $i.next_milestone = [int]$ms
   $i.runs_to_go = [int]($ms - $i.total_runs)
   $i.milestone_date = if ($ms -and $i.runs_to_go -le $runDays.Count) { $runDays[$i.runs_to_go - 1].ToString('yyyy-MM-dd') } else { '' }
+  # Volunteer rate: credits per parkrun should stay at 10% or more.
+  $i.vol_below_target = [bool]($i.volunteer_credits * 100 -lt $volTargetPct * $i.total_runs)
+  $i.vol_credits_to_target = [int][math]::Max(0, [math]::Ceiling($volTargetPct * $i.total_runs / 100) - $i.volunteer_credits)
+  $i.vol_runs_before_below = [int][math]::Max(0, [math]::Floor(100 * $i.volunteer_credits / $volTargetPct) - $i.total_runs)
   $vm = NextMilestone $milestones.volunteer $i.volunteer_credits
   $i.next_vol_milestone = [int]$vm
   $i.vol_to_go = [int]($vm - $i.volunteer_credits)
@@ -274,6 +281,8 @@ if (Test-Path $prevPath) {
     $d = $r.volunteer_credits - $p.volunteer_credits; if ($d) { $bits += "+$d volunteer credit(s)" }
     $hit = $milestones.volunteer | ? { $_ -gt $p.volunteer_credits -and $_ -le $r.volunteer_credits } | select -Last 1
     if ($hit) { $bits += "reached the v$hit milestone!" }
+    if ($r.vol_below_target -and -not $p.vol_below_target) { $bits += "volunteering dropped below $volTargetPct% ($($r.credits_per_100)%): $($r.vol_credits_to_target) credit(s) to get back" }
+    elseif ($p.vol_below_target -and -not $r.vol_below_target) { $bits += "volunteering back above $volTargetPct%" }
     if ($r.raefarer_finished -ne $p.raefarer_finished) { $bits += "Raefarer x$($p.raefarer_finished) -> x$($r.raefarer_finished)" }
     elseif ($r.done_next -ne $p.done_next) { $bits += "round $($r.next_round): $($p.done_next) -> $($r.done_next) of $($r.raefarer_total)" }
     $n1 = ($nendy | ? { $_.key -eq $r.key -and $_.rank -eq 1 }).event

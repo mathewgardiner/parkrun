@@ -7,7 +7,7 @@
      the rules under "About these numbers" (the user prefers a little text over none). */
   .gp { --gp-judi: #e8792b; --gp-katie: #3a7fd0; --gp-mathew: #3a9a52;
     --pr-aubergine: #2b233d; --pr-orange: #ffa300; --pr-on-dark-muted: #c9c3d6;
-    --pr-need: color-mix(in srgb, #5b4a80 70%, var(--color-fg));
+    --pr-need: color-mix(in srgb, #7b5cc4 78%, var(--color-fg));
     --cds-radius: 5px; --pr-shadow: 0 10px 24px rgba(43, 35, 61, .10);
     --pr-font: 'Montserrat', var(--font-anthropic-sans);
     display: grid; gap: var(--cds-gap-xl); font-family: var(--pr-font); color: var(--color-fg); }
@@ -53,6 +53,10 @@
   .gp-miss input { width: 4.5em; font: inherit; font-variant-numeric: tabular-nums; padding: 3px 6px; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); }
   .gp-miss input:focus-visible { outline: 2px solid var(--runner); outline-offset: 1px; }
   .gp-pb { display: block; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin-top: 2px; }
+  /* Volunteer rate: quiet when 10% or more; a red flag with the fix when below. */
+  .gp-vol { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .gp-vol.gp-flag { color: var(--color-bad); background: color-mix(in srgb, var(--color-bad) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-bad) 35%, transparent); border-radius: var(--cds-radius); padding: 6px 10px; line-height: 1.45; }
+  .gp-vol.gp-flag b { font-weight: 700; }
 
   .gp-seg { display: inline-flex; border: 1px solid var(--color-border-line); border-radius: 999px; padding: 3px; gap: 3px; flex-wrap: wrap; justify-self: start; }
   .gp-seg button { font: inherit; font-size: var(--cds-font-size-caption); font-weight: 600; border: 0; background: transparent; color: var(--color-fg); padding: 5px 12px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
@@ -193,6 +197,7 @@
         <p class="gp-sub" data-draw="ms" data-key="judi" data-part="togo" data-source="runners family">—</p>
         <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="judi" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
         <p class="gp-sub" data-draw="ms" data-key="judi" data-part="vol" data-source="runners">—</p>
+        <p class="gp-vol" data-draw="vol-rate" data-key="judi" data-source="runners">—</p>
         <hr>
         <p class="gp-stats" data-draw="pc-stats" data-key="judi" data-source="runners nendy">—</p>
       </article>
@@ -206,6 +211,7 @@
         <p class="gp-sub" data-draw="ms" data-key="katie" data-part="togo" data-source="runners family">—</p>
         <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="katie" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
         <p class="gp-sub" data-draw="ms" data-key="katie" data-part="vol" data-source="runners">—</p>
+        <p class="gp-vol" data-draw="vol-rate" data-key="katie" data-source="runners">—</p>
         <hr>
         <p class="gp-stats" data-draw="pc-stats" data-key="katie" data-source="runners nendy">—</p>
       </article>
@@ -219,6 +225,7 @@
         <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="togo" data-source="runners family">—</p>
         <label class="gp-miss">parkruns I'll miss <input type="number" class="gp-miss-in" data-key="mathew" min="0" max="150" step="1" value="0" inputmode="numeric"></label>
         <p class="gp-sub" data-draw="ms" data-key="mathew" data-part="vol" data-source="runners">—</p>
+        <p class="gp-vol" data-draw="vol-rate" data-key="mathew" data-source="runners">—</p>
         <hr>
         <p class="gp-stats" data-draw="pc-stats" data-key="mathew" data-source="runners nendy">—</p>
       </article>
@@ -243,8 +250,8 @@
       </div>
     </div>
     <div class="gp-legend">
-      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--pr-need)"></circle></svg> someone still needs it</span>
-      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--cds-chart-muted)"></circle></svg> everyone's done it this round</span>
+      <span><svg width="32" height="20" aria-hidden="true"><circle cx="7" cy="10" r="5.5" style="fill: var(--pr-need)"></circle><circle cx="22" cy="10" r="8" style="fill: var(--pr-need)"></circle></svg> someone still needs it (bigger = more of you)</span>
+      <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" style="fill: var(--cds-chart-muted); opacity: .7"></circle></svg> everyone's done it this round</span>
       <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" style="fill: var(--color-fg)"></rect></svg> Cammeray</span>
       <span>Coastline is approximate.</span>
     </div>
@@ -349,6 +356,21 @@
     const day = days[row.runs_to_go - 1 + missed];
     if (part === 'date') { node.textContent = day ? dayFmt(new Date(day + 'T00:00:00Z')) : 'more than 3 years away'; return; }
     node.textContent = `${row.runs_to_go} parkrun${row.runs_to_go === 1 ? '' : 's'} to go, ` + (missed ? `missing ${missed}` : `if you don't miss any`);
+  });
+
+  dash.draw('vol-rate', (node) => {
+    const r = rowsOf('runners'); const row = r && r.find((x) => x.key === node.dataset.key);
+    node.replaceChildren(); node.classList.remove('gp-flag');
+    if (!row) { node.textContent = '—'; return; }
+    const pct = `${row.credits_per_100.toFixed(1)}%`;
+    if (row.vol_below_target) {
+      node.classList.add('gp-flag');
+      node.appendChild(el('b', null, `Volunteering ${pct} of runs, below 10%`));
+      node.appendChild(el('br'));
+      node.appendChild(document.createTextNode(`Volunteer ${row.vol_credits_to_target} more time${row.vol_credits_to_target === 1 ? '' : 's'} to get back to 10%`));
+      return;
+    }
+    node.textContent = `Volunteering ${pct} of runs` + (row.vol_runs_before_below <= 2 ? ` · below 10% after ${row.vol_runs_before_below + 1} more parkrun${row.vol_runs_before_below ? 's' : ''}` : '');
   });
 
   dash.draw('pc-stats', (node) => {
@@ -465,10 +487,15 @@
     };
     const hide = () => { tip.hidden = true; };
 
-    svg.append('g').selectAll('circle').data(ev).join('circle')
-      .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1]).attr('r', 5)
+    // Needed events stand out: violet, sized by how many of you need it (1 to 3), drawn above the
+    // small faded "everyone's done it" dots.
+    const evOrdered = [...ev].sort((a, b) => a.needed_by - b.needed_by);
+    svg.append('g').selectAll('circle').data(evOrdered).join('circle')
+      .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1])
+      .attr('r', (d) => (d.needed_by > 0 ? 4.5 + 1.75 * d.needed_by : 3.5))
       .style('fill', (d) => (d.needed_by > 0 ? 'var(--pr-need)' : 'var(--cds-chart-muted)'))
-      .style('stroke', 'var(--color-panel)').style('stroke-width', 1.5)
+      .style('opacity', (d) => (d.needed_by > 0 ? 1 : 0.7))
+      .style('stroke', 'var(--color-panel)').style('stroke-width', (d) => (d.needed_by > 0 ? 2 : 1))
       .on('pointerenter pointermove', (evt, d) => show(evt, d.event, `${G.order.map((k) => `${G.names[k]} ${d['runs_' + k]}`).join(' · ')} · ${d.drive_mins} min drive` + (d.start_time ? ` · starts ${d.start_time}` : '')))
       .on('pointerleave', hide);
 
