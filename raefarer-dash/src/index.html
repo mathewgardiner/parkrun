@@ -13,6 +13,8 @@
   .gp p { margin: 0; max-width: 70ch; }
   .gp-head { display: grid; gap: var(--cds-gap-sm); background: var(--pr-aubergine); color: #fff; border-radius: var(--cds-radius); padding: var(--cds-pad-xl) var(--cds-pad-xl) var(--cds-pad-lg); box-shadow: var(--pr-shadow); }
   .gp-head h1 { color: #fff; }
+  .gp-title { display: flex; align-items: center; gap: .4em; }
+  .gp-logo { width: 1.25em; height: 1.25em; flex: none; margin-left: -.2em; }
   .gp-head .gp-lede b { color: var(--pr-orange); font-weight: 700; }
   .gp-head .gp-meta { color: var(--pr-on-dark-muted); }
   .gp-eyebrow { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); letter-spacing: .06em; text-transform: uppercase; }
@@ -99,7 +101,7 @@
 
 <div class="gp">
   <header class="gp-head" id="top">
-    <h1>parkrun HQ</h1>
+    <h1 class="gp-title"><svg class="gp-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#2b233d"/><rect x="11" y="19" width="42" height="26" rx="13" fill="none" stroke="#ffa300" stroke-width="6"/><circle cx="40" cy="19" r="6.5" fill="#fff" stroke="#2b233d" stroke-width="2.5"/></svg>parkrun HQ</h1>
     <p class="gp-lede" id="takeaway">Next outing for all three: <b data-draw="tk" data-field="event" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b>. Needed by <b data-draw="tk" data-field="needed_by_going" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> of you, about <b data-draw="tk" data-field="drive_mins" data-source="combos" data-where="combo=judi+katie+mathew&amp;rank=1">—</b> min from Cammeray.</p>
     <p class="gp-meta">Results to <span data-draw="asof" data-source="family" data-field="as_of" data-row="0">—</span> · Judi A7342171 · Katie A3947996 · Mathew A7157558</p>
   </header>

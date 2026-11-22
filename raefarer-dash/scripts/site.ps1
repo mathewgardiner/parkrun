@@ -19,6 +19,9 @@ $html = @"
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>parkrun HQ</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#2b233d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
@@ -88,4 +91,7 @@ $page
 "@
 
 [System.IO.File]::WriteAllText((Join-Path $out 'index.html'), $html, (New-Object System.Text.UTF8Encoding $false))
+# browser-tab and home-screen icons
+Copy-Item (Join-Path $root 'src\icon.svg') (Join-Path $out 'icon.svg') -Force
+Copy-Item (Join-Path $root 'src\icon-180.png') (Join-Path $out 'icon-180.png') -Force
 "site written: $(Join-Path $out 'index.html') ($([math]::Round($html.Length / 1KB)) KB)"

@@ -13,6 +13,7 @@ $top = Read-Json 'combos.json' | ? { $_.combo -eq 'judi+katie+mathew' } | sort r
 $colors = @{ judi = '#e8792b'; katie = '#3a7fd0'; mathew = '#3a9a52' }
 $order = 'judi', 'katie', 'mathew'
 $asOf = ([datetime]$family.as_of).ToString('d MMM yyyy')
+$logo = [System.IO.File]::ReadAllText((Join-Path $root 'src\icon.svg'))
 
 $cards = foreach ($k in $order) {
   $r = $runners | ? { $_.key -eq $k }
@@ -44,7 +45,8 @@ $html = @"
 html,body{width:1080px;height:1350px;background:#f2f1f5;color:#272727;font-family:"Montserrat","Segoe UI",system-ui,sans-serif}
 .wrap{padding:56px 60px;display:flex;flex-direction:column;gap:40px;height:100%}
 .hd{background:#2b233d;color:#fff;border-radius:10px;padding:36px 40px}
-h1{font-weight:700;font-size:62px;letter-spacing:-.5px}
+h1{font-weight:700;font-size:62px;letter-spacing:-.5px;display:flex;align-items:center;gap:22px}
+.logo{display:block;width:78px;height:78px;margin-left:-10px}.logo svg{display:block;width:100%;height:100%}
 .date{font-size:26px;color:#c9c3d6;margin-top:8px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .card{background:#fff;border-radius:10px;border-top:10px solid var(--c);padding:26px 24px;display:flex;flex-direction:column;gap:10px;box-shadow:0 10px 24px rgba(43,35,61,.10)}
@@ -64,7 +66,7 @@ li:last-child{border-bottom:0}
 .mins{color:#666;font-size:26px;width:110px;text-align:right}
 .foot{margin-top:auto;font-size:24px;color:#666}
 </style></head><body><div class="wrap">
-<div class="hd"><h1>parkrun HQ</h1><div class="date">$asOf</div></div>
+<div class="hd"><h1><span class="logo">$logo</span>parkrun HQ</h1><div class="date">$asOf</div></div>
 <div class="cards">$($cards -join '')</div>
 <div><h2>Next, all 3</h2><ul>$($list -join '')</ul></div>
 <div class="foot">$($family.total_runs) family runs &middot; $($family.volunteer_credits) vol credits &middot; $($family.shared_events) shared events</div>
