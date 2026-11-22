@@ -320,7 +320,7 @@
       </div>
     </div>
     <div class="gp-legend">
-      <span><svg width="32" height="20" aria-hidden="true"><circle cx="7" cy="10" r="5.5" style="fill: var(--pr-need)"></circle><circle cx="22" cy="10" r="8" style="fill: var(--pr-need)"></circle></svg> someone still needs it (bigger = more of you)</span>
+      <span><svg width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" style="fill: var(--pr-need)"></circle></svg> someone still needs it</span>
       <span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" style="fill: var(--cds-chart-muted); opacity: .7"></circle></svg> everyone's done it this round</span>
       <span><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" style="fill: var(--color-fg)"></rect></svg> Cammeray</span>
       <span>Coastline is approximate.</span>
@@ -557,12 +557,11 @@
     };
     const hide = () => { tip.hidden = true; };
 
-    // Needed events stand out: violet, sized by how many of you need it (1 to 3), drawn above the
-    // small faded "everyone's done it" dots.
+    // Needed events stand out: one size of violet dot, drawn above the small faded "everyone's done it" dots.
     const evOrdered = [...ev].sort((a, b) => a.needed_by - b.needed_by);
     svg.append('g').selectAll('circle').data(evOrdered).join('circle')
       .attr('cx', (d) => proj([d.lon, d.lat])[0]).attr('cy', (d) => proj([d.lon, d.lat])[1])
-      .attr('r', (d) => (d.needed_by > 0 ? 4.5 + 1.75 * d.needed_by : 3.5))
+      .attr('r', (d) => (d.needed_by > 0 ? 7 : 3.5))
       .style('fill', (d) => (d.needed_by > 0 ? 'var(--pr-need)' : 'var(--cds-chart-muted)'))
       .style('opacity', (d) => (d.needed_by > 0 ? 1 : 0.7))
       .style('stroke', 'var(--color-panel)').style('stroke-width', (d) => (d.needed_by > 0 ? 2 : 1))
