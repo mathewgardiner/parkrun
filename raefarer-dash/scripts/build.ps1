@@ -5,6 +5,7 @@
 #   data/events.json         parkrun events feed (https://images.parkrun.com/events.json)
 #   data/sydney-events.json  the 36 Raefarer events + drive time from Cammeray (OSRM, free-flow)
 #   data/retired-events.json closed events: no "isn't in the current event feed" warning
+#   data/raefarer-latched.json  each runner's most Raefarer rounds finished (written by this build)
 #   data/milestones.json     parkrun's milestone t-shirt counts, for runs and volunteer credits
 #   data/start-times.json    Saturday start time per event name (scripts/set-start-time.ps1)
 #   data/A<id>.txt           one per runner, copied from their public profile:
@@ -27,7 +28,9 @@
 #   Raefarer rounds: an event counts toward finished rounds only once at least one of
 #     the family has run it. Until then (e.g. a newly launched event) it doesn't hold
 #     anyone back; as soon as one of us runs it, it counts for everyone.
-#     finished = lowest run count across counted events; next round = finished + 1;
+#     finished = lowest run count across counted events, but never below the runner's
+#     best so far (data/raefarer-latched.json): a newly launched event doesn't undo a
+#     finished round, it joins the round being worked on. next round = finished + 1;
 #     a runner "needs" an event when their run count there is below their next round.
 #   Who's going ranking, for a group G:
 #     1. most of G need it   2. fewest of the rest need it (save shared ones for later)
@@ -149,9 +152,15 @@ function NextMilestone($list, $n) { $list | ? { $_ -gt $n } | select -First 1 }
 # ---- Raefarer rounds
 $counted = @($sydney | ? { $e = $_.event; @($family | ? { (RunsAt $_.key $e) -gt 0 }).Count -gt 0 })
 $asOf = (Get-Date).ToString('yyyy-MM-dd')
+# Finished rounds are latched: a new event never takes a round away (data/raefarer-latched.json).
+$latchPath = Join-Path $data 'raefarer-latched.json'
+$latched = @{}
+if (Test-Path $latchPath) { ([System.IO.File]::ReadAllText($latchPath) | ConvertFrom-Json).PSObject.Properties | % { $latched[$_.Name] = [int]$_.Value } }
 $runnerRows = foreach ($m in $family) {
   $i = $info[$m.key]
-  $finished = if ($counted.Count) { ($counted | % { RunsAt $m.key $_.event } | measure -Minimum).Minimum } else { 0 }
+  $computed = if ($counted.Count) { ($counted | % { RunsAt $m.key $_.event } | measure -Minimum).Minimum } else { 0 }
+  $finished = [math]::Max([int]$computed, [int]$latched[$m.key])
+  $latched[$m.key] = $finished
   $next = $finished + 1
   $i.raefarer_finished = [int]$finished
   $i.next_round = $next
@@ -261,6 +270,9 @@ if (Test-Path $prevPath) {
     $changes += if ($bits) { "$($r.name): " + ($bits -join '; ') } else { "$($r.name): no change" }
   }
 }
+
+$latchOut = [ordered]@{}; foreach ($m in $family) { $latchOut[$m.key] = $latched[$m.key] }
+[System.IO.File]::WriteAllText($latchPath, ($latchOut | ConvertTo-Json) + "`n", (New-Object System.Text.UTF8Encoding $false))
 
 Save 'runners.json' $runnerRows
 Save 'sydney_table.json' $table

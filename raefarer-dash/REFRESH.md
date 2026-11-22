@@ -15,6 +15,7 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/A<id>.txt` | One per runner, produced by `scripts/extract-profile.js`. |
 | `data/sydney-events.json` | The 36 Raefarer events, with drive time from Cammeray. |
 | `data/not-raefarer.json` | Nearby events already decided not to count (so they aren't flagged as new). |
+| `data/raefarer-latched.json` | Each runner's most Raefarer rounds finished. `build.ps1` keeps it up to date, so a new event never takes a finished round away. Don't edit it by hand. |
 | `data/milestones.json` | parkrun's milestone t-shirt counts (25, 50, 100, 200, 250, then every 100 to 1000), for runs and volunteer credits. |
 | `data/start-times.json` | Saturday start time for each event shown on the page. Written by `scripts/set-start-time.ps1`. |
 | `scripts/extract-start-time.js` | Run on an event's parkrun page; returns its Saturday start time, e.g. `7:00am`. |
@@ -50,4 +51,4 @@ After editing `src/index.html`, run `build.ps1`, then ArtifactData `set` on `fil
 
 ## Adding a new Sydney parkrun
 
-Add it to `data/sydney-events.json` with its name (as parkrun shows it, without " parkrun"), slug, loc, lat, lon, and `mins`/`km` drive time from Cammeray. If it doesn't count, add its name to `data/not-raefarer.json` instead. Then do steps 2â€“6. No other flag is needed: an event none of you has run doesn't count toward finished rounds until one of you runs it.
+Add it to `data/sydney-events.json` with its name (as parkrun shows it, without " parkrun"), slug, loc, lat, lon, and `mins`/`km` drive time from Cammeray. If it doesn't count, add its name to `data/not-raefarer.json` instead. Then do steps 2â€“6. No other flag is needed: an event none of you has run doesn't count toward finished rounds until one of you runs it. Once it counts, it joins each person's current round; rounds already finished stay finished (`data/raefarer-latched.json`).
