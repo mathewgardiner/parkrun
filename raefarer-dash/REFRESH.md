@@ -15,6 +15,7 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/A<id>.txt` | One per runner, produced by `scripts/extract-profile.js`. |
 | `data/sydney-events.json` | The 36 Raefarer events, with drive time from Cammeray. |
 | `data/not-raefarer.json` | Nearby events already decided not to count (so they aren't flagged as new). |
+| `data/retired-events.json` | Closed events (e.g. Jindabyne Sport and Recreation): their runs still count, but `build.ps1` doesn't warn that they're missing from the feed. |
 | `data/events.json` | parkrun's event feed, downloaded by `refresh.ps1`. |
 | `scripts/build.ps1` | All the rules: Raefarer rounds, who's-going rankings, NENDYs, totals. Writes `dist/`. |
 | `scripts/refresh.ps1` | Downloads the feed, flags possible new Sydney events, runs the build. |

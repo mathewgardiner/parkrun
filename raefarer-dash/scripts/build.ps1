@@ -4,6 +4,7 @@
 # Inputs
 #   data/events.json         parkrun events feed (https://images.parkrun.com/events.json)
 #   data/sydney-events.json  the 36 Raefarer events + drive time from Cammeray (OSRM, free-flow)
+#   data/retired-events.json closed events: no "isn't in the current event feed" warning
 #   data/A<id>.txt           one per runner, copied from their public profile:
 #                              '# Name SURNAME (A123) ...'          first line
 #                              '# total: N'                         total parkruns
@@ -65,6 +66,10 @@ foreach ($f in $feed) {
   $n = $f.properties.EventLongName -replace ' parkrun', ''
   $byName[$n] = [pscustomobject]@{ event = $n; lat = $f.geometry.coordinates[1]; lon = $f.geometry.coordinates[0]; country = $f.properties.countrycode }
 }
+# Events known to be closed: still counted in run totals, but no "not in feed" warning.
+$retired = @{}
+$retiredPath = Join-Path $data 'retired-events.json'
+if (Test-Path $retiredPath) { Read-Json $retiredPath | % { $retired[$_] = $true } }
 
 # ---- Raefarer list
 $sydney = Read-Json (Join-Path $data 'sydney-events.json') | % {
@@ -95,7 +100,7 @@ foreach ($m in $family) {
     if ((To-Sec $t) -lt (To-Sec $agg[$ev].best)) { $agg[$ev].best = $t }
   }
   if ($null -eq $total) { $total = ($agg.Values | % { $_.runs } | measure -Sum).Sum }
-  foreach ($ev in $agg.Keys) { if (-not $byName[$ev]) { Write-Warning "$($m.id): '$ev' isn't in the current event feed (retired or renamed?)" } }
+  foreach ($ev in $agg.Keys) { if (-not $byName[$ev] -and -not $retired[$ev]) { Write-Warning "$($m.id): '$ev' isn't in the current event feed (retired or renamed?)" } }
 
   $runs[$m.key] = @{}; foreach ($ev in $agg.Keys) { $runs[$m.key][$ev] = $agg[$ev].runs }
   $homeEv = $agg.Keys | sort { -$agg[$_].runs } | select -First 1
