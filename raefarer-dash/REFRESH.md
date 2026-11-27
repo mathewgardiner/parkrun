@@ -34,14 +34,13 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 
 ## When it runs
 
-parkrun events post results at different times, so the refresh tries several times and updates for whoever has results so far. Two scheduled tasks run it: `parkrun-dashboard-refresh-saturday` at 9am, 10am, 12pm and 8pm on Saturday, and `parkrun-dashboard-refresh` at 3:30pm on Sunday (the last attempt). An attempt only builds when something is new, and the attempts stop for the week once all three results are in and built.
+parkrun events post results at different times, so the refresh tries several times and updates for whoever has results so far. One scheduled task, `parkrun-dashboard-refresh`, runs it at 9:30am, 10:30am, 12:30pm, 3:30pm and 8:30pm on both Saturday and Sunday. Sunday 8:30pm is the last attempt of the week. An attempt only builds when something is new, and attempts stop at step 0 once all three results are in and built.
 
 0. **Should this attempt run?** Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1`.
    - If it prints `WEEK DONE: YES`, stop: report "All three results are in and on the dashboard" and do nothing else.
-   - **Saturday morning attempts only** (9am, 10am, 12pm: Saturday before 4pm): call `get_usage` (mcp__ccd_session_mgmt__get_usage). If any plan window shows 90% used or more, stop and report it; the next attempt will try again. The 8pm and Sunday attempts skip this check.
+   - **Every attempt except the last** (Sunday 8:30pm): call `get_usage` (mcp__ccd_session_mgmt__get_usage). If any plan window shows 90% used or more, stop and report it; the next attempt will try again.
    - Otherwise do step 1.
-   - **Waiting for the human check** (step 1) lasts until 10 minutes before the next attempt (9:50am, 11:50am, 7:50pm, 11:59pm Saturday), and until 11:59pm Sunday for the Sunday attempt. Saturday attempts send one notification and no reminders. When the time is up, keep any runner files already copied and go on to step 1b.
-1b. **Anything new?** After step 1, run `refresh-status.ps1` again.
+   - **Waiting for the human check** (step 1): send one notification, then wait until 10 minutes before the next attempt on the same day (10:20am, 12:20pm, 3:20pm, 8:20pm), or until 11:59pm for an 8:30pm attempt. The last attempt (Sunday 8:30pm) also sends one reminder at about 10pm. When the time is up, keep any runner files already copied and go on to step 1b.1b. **Anything new?** After step 1, run `refresh-status.ps1` again.
    - If it prints `NEW SINCE LAST BUILD: none`, stop without building: report which runners don't have this week's result yet (its `no result this week yet` lines), and that the next attempt will check again.
    - Otherwise do steps 2–8, and in the step 7 report include its `no result this week yet` lines, if any.
 ## Weekly refresh
