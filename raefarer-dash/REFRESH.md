@@ -21,7 +21,8 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/start-times.json` | Saturday start time for each event shown on the page. Written by `scripts/set-start-time.ps1`. |
 | `scripts/extract-start-time.js` | Run on an event's parkrun page; returns its Saturday start time, e.g. `7:00am`. |
 | `scripts/set-start-time.ps1` | Saves one event's start time to `data/start-times.json`. |
-| `scripts/refresh-status.ps1` | From the runner files: whether each runner's result for this week (since Saturday midnight) is in, who has changed since the last build, and whether the week is done. `-Mark` records a build in `dist/last-build.json`. |
+| `scripts/refresh-status.ps1` | From the runner files: whether each runner's result for this week (since Saturday midnight) is in, who has changed since the last build, and whether the week is done. `-Mark` records a build in `dist/last-build.json`; `-CloseWeek` confirms this Saturday for anyone without a result. |
+| `data/results-to.json` | Per runner, the latest Saturday confirmed with no result, written by `refresh-status.ps1 -CloseWeek`. Each person's "Results to" date is the later of this and their latest run. Don't edit it by hand. |
 | `data/retired-events.json` | Closed events (e.g. Jindabyne Sport and Recreation): their runs still count, but `build.ps1` doesn't warn that they're missing from the feed. |
 | `data/events.json` | parkrun's event feed, downloaded by `refresh.ps1`. |
 | `scripts/build.ps1` | All the rules: Raefarer rounds, who's-going rankings, NENDYs, totals. Writes `dist/`. |
@@ -40,7 +41,8 @@ parkrun events post results at different times, so the refresh tries several tim
    - If it prints `WEEK DONE: YES`, stop: report "All three results are in and on the dashboard" and do nothing else.
    - **Every attempt except the last** (Sunday 8:30pm): call `get_usage` (mcp__ccd_session_mgmt__get_usage). If any plan window shows 90% used or more, stop and report it; the next attempt will try again.
    - Otherwise do step 1.
-   - **Waiting for the human check** (step 1): send one notification, then wait until 10 minutes before the next attempt on the same day (10:20am, 12:20pm, 3:20pm, 8:20pm), or until 11:59pm for an 8:30pm attempt. The last attempt (Sunday 8:30pm) also sends one reminder at about 10pm. When the time is up, keep any runner files already copied and go on to step 1b.1b. **Anything new?** After step 1, run `refresh-status.ps1` again.
+   - **Waiting for the human check** (step 1): send one notification, then wait until 10 minutes before the next attempt on the same day (10:20am, 12:20pm, 3:20pm, 8:20pm), or until 11:59pm for an 8:30pm attempt. The last attempt (Sunday 8:30pm) also sends one reminder at about 10pm. When the time is up, keep any runner files already copied and go on to step 1b.1a. **Last attempt only (Sunday 8:30pm):** if all three profiles were copied in this attempt, run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1 -CloseWeek`. Anyone with no result this week then shows "Results to" this Saturday (it writes `data/results-to.json`). If a profile couldn't be copied, skip this.
+1b. **Anything new?** After step 1, run `refresh-status.ps1` again.
    - If it prints `NEW SINCE LAST BUILD: none`, stop without building: report which runners don't have this week's result yet (its `no result this week yet` lines), and that the next attempt will check again.
    - Otherwise do steps 2–8, and in the step 7 report include its `no result this week yet` lines, if any.
 ## Weekly refresh

@@ -12,7 +12,7 @@ $family = (Read-Json 'family.json')[0]
 $top = Read-Json 'combos.json' | ? { $_.combo -eq 'judi+katie+mathew' } | sort rank | select -First 7
 $colors = @{ judi = '#e8792b'; katie = '#3a7fd0'; mathew = '#3a9a52' }
 $order = 'judi', 'katie', 'mathew'
-$asOf = ([datetime]$family.as_of).ToString('d MMM yyyy')
+$asOf = if ($family.results_to_text) { 'Results to ' + $family.results_to_text } else { ([datetime]$family.as_of).ToString('d MMM yyyy') }
 $logo = [System.IO.File]::ReadAllText((Join-Path $root 'src\icon.svg'))
 
 $cards = foreach ($k in $order) {

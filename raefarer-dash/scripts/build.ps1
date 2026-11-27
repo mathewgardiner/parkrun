@@ -9,9 +9,11 @@
 #   data/history.json        family totals per build date, for the tiles' weekly change (written by this build)
 #   data/milestones.json     parkrun's milestone t-shirt counts, for runs and volunteer credits
 #   data/start-times.json    Saturday start time per event name (scripts/set-start-time.ps1)
+#   data/results-to.json     per runner id, the latest Saturday confirmed with no result (refresh-status.ps1 -CloseWeek)
 #   data/A<id>.txt           one per runner, copied from their public profile:
 #                              '# Name SURNAME (A123) ...'          first line
 #                              '# total: N'                         total parkruns
+#                              '# Latest run: yyyy-mm-dd Event'     top row of Most Recent parkruns
 #                              '# Volunteer credits: N'             "Total Credits" row of the Volunteer Summary
 #                              '# Volunteer roles: Role n, Role n'  (kept for reference)
 #                            rows: 'Event|Runs|BestTime' (Event Summaries table)
@@ -39,6 +41,8 @@
 #   NENDY: nearest event not run yet, straight line from Cammeray, any parkrun.
 #   Volunteer rate: credits / parkruns should be at least 10% ($volTargetPct). Below it, the page
 #     flags the runner with the credits needed to get back (ceil(runs / 10) - credits).
+#   Results to: per runner, the later of their latest run and their confirmed Saturday
+#     (data/results-to.json). The page shows one date if everyone matches, else each person's.
 #   Next milestone: the first count in data/milestones.json above the runner's total.
 #     Its date assumes a run on every coming Saturday, plus Christmas Day and New Year's
 #     Day when they aren't Saturdays (one result counts per day). The page can push it
@@ -97,6 +101,10 @@ $startTimes = @{}
 $stPath = Join-Path $data 'start-times.json'
 if (Test-Path $stPath) { ([System.IO.File]::ReadAllText($stPath) | ConvertFrom-Json).PSObject.Properties | % { $startTimes[$_.Name] = $_.Value } }
 function StartOf($ev) { if ($startTimes.Contains($ev)) { [string]$startTimes[$ev] } else { '' } }
+# Saturdays confirmed per runner id by refresh-status.ps1 -CloseWeek (for "Results to")
+$confirmedTo = @{}
+$ctPath = Join-Path $data 'results-to.json'
+if (Test-Path $ctPath) { ([System.IO.File]::ReadAllText($ctPath) | ConvertFrom-Json).PSObject.Properties | % { $confirmedTo[$_.Name] = [string]$_.Value } }
 
 # ---- Raefarer list
 $sydney = Read-Json (Join-Path $data 'sydney-events.json') | % {
@@ -130,6 +138,13 @@ foreach ($m in $family) {
   if ($null -eq $total) { $total = ($agg.Values | % { $_.runs } | measure -Sum).Sum }
   foreach ($ev in $agg.Keys) { if (-not $byName[$ev] -and -not $retired[$ev]) { Write-Warning "$($m.id): '$ev' isn't in the current event feed (retired or renamed?)" } }
 
+  # Results to: the later of their latest run ('# Latest run: yyyy-mm-dd ...') and the Saturday
+  # data/results-to.json confirms for them (the last attempt of a week confirms that Saturday
+  # for anyone with no result that week). Falls back to the build date.
+  $latestRun = [regex]::Match((($head | ? { $_ -match '^#\s*Latest run\s*:' }) -join ''), '(\d{4}-\d{2}-\d{2})').Groups[1].Value
+  $resultsTo = @($latestRun, [string]$confirmedTo[$m.id] | ? { $_ }) | sort -Descending | select -First 1
+  if (-not $resultsTo) { $resultsTo = (Get-Date).ToString('yyyy-MM-dd') }
+
   $runs[$m.key] = @{}; foreach ($ev in $agg.Keys) { $runs[$m.key][$ev] = $agg[$ev].runs }
   $best[$m.key] = @{}; foreach ($ev in $agg.Keys) { $best[$m.key][$ev] = $agg[$ev].best }
   $homeEv = $agg.Keys | sort { -$agg[$_].runs } | select -First 1
@@ -138,7 +153,14 @@ foreach ($m in $family) {
     runner_id = $m.id; key = $m.key; name = $first; total_runs = $total; events_visited = $agg.Count
     volunteer_credits = $credits; credits_per_100 = [math]::Round(100 * $credits / $total, 1)
     fastest_time = $agg[$fast].best; fastest_event = $fast; home_event = $homeEv; home_runs = $agg[$homeEv].runs
+    results_to = $resultsTo
   }
+}
+# One line for the page and share card: '28 Nov 2026' when everyone's the same, else each person's date.
+$toDates = @($family | % { $info[$_.key].results_to } | select -Unique)
+$fmtDay = { param($d, $f) ([datetime]::ParseExact($d, 'yyyy-MM-dd', $null)).ToString($f) }
+$resultsToText = if ($toDates.Count -eq 1) { & $fmtDay $toDates[0] 'd MMM yyyy' } else {
+  ($family | % { "$($info[$_.key].name) " + (& $fmtDay $info[$_.key].results_to 'd MMM') }) -join " $([char]0x00B7) "
 }
 function RunsAt($key, $ev) { $v = $runs[$key][$ev]; if ($v) { [int]$v } else { 0 } }
 function PbAt($key, $ev) { $v = $best[$key][$ev]; if ($v) { [string]$v } else { '' } }
@@ -249,6 +271,7 @@ $familyRow = [pscustomobject]@{
   shared_events = @($allEvents.Values | ? { $_ -eq $family.Count }).Count
   events_any = $allEvents.Count
   as_of = $asOf
+  results_to_text = $resultsToText
   # upcoming parkrun days, comma-separated: the page counts along this for "parkruns I'll miss"
   run_dates = ($runDays | % { $_.ToString('yyyy-MM-dd') }) -join ','
 }
