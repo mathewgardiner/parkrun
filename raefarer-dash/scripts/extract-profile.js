@@ -20,11 +20,22 @@
     roles = [...vol.querySelectorAll('tbody tr')].map(cells).map((c) => `${c[0]} ${c[1]}`);
     credits = parseInt((vol.querySelector('tfoot')?.innerText.match(/(\d+)/) || [0, 0])[1], 10);
   }
-  const today = new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;  // local date
   const first = h2.split(/\s+/)[0];  // first name only: no surnames in the public repo
+  // Latest run, from "Most Recent parkruns" (used by refresh-status.ps1 to tell whether this week's result is in)
+  const recent = tables.find((t) => heads(t).includes('Run Date'));
+  let latest = 'none';
+  if (recent) {
+    const r = recent.querySelector('tbody tr');
+    const c = r ? cells(r) : [];
+    const dm = (c[col(recent, 'Run Date')] || '').match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (dm) latest = `${dm[3]}-${dm[2]}-${dm[1]} ${(c[col(recent, 'Event')] || '').replace(' parkrun', '')}`;
+  }
   return [
     `# ${first} (${id}) — fetched ${today} from ${location.href} (Event Summaries)`,
     `# total: ${total}`,
+    `# Latest run: ${latest}`,
     `# Volunteer credits: ${credits}`,
     `# Volunteer roles: ${roles.join(', ')}`,
     '# Event|Runs|BestTime',

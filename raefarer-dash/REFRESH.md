@@ -1,4 +1,4 @@
-﻿# Refreshing parkrun HQ
+# Refreshing parkrun HQ
 
 Dashboard: https://claude.ai/artifact/UVYPWkHQjcJpyWdUENpen3 (Claude "Data" dashboard)
 Public copy (no login): https://mathewgardiner.github.io/parkrun/raefarer-dash/
@@ -21,8 +21,7 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 | `data/start-times.json` | Saturday start time for each event shown on the page. Written by `scripts/set-start-time.ps1`. |
 | `scripts/extract-start-time.js` | Run on an event's parkrun page; returns its Saturday start time, e.g. `7:00am`. |
 | `scripts/set-start-time.ps1` | Saves one event's start time to `data/start-times.json`. |
-| `scripts/refresh-status.ps1` | Says whether the refresh already finished this week (since Saturday midnight); `-Mark` records a finished one in `dist/last-refresh.txt`. |
-| `scripts/extract-results-date.js` | Run on Willoughby's latest results page; says whether today's results are out. |
+| `scripts/refresh-status.ps1` | From the runner files: whether each runner's result for this week (since Saturday midnight) is in, who has changed since the last build, and whether the week is done. `-Mark` records a build in `dist/last-build.json`. |
 | `data/retired-events.json` | Closed events (e.g. Jindabyne Sport and Recreation): their runs still count, but `build.ps1` doesn't warn that they're missing from the feed. |
 | `data/events.json` | parkrun's event feed, downloaded by `refresh.ps1`. |
 | `scripts/build.ps1` | All the rules: Raefarer rounds, who's-going rankings, NENDYs, totals. Writes `dist/`. |
@@ -35,16 +34,16 @@ The weekly refresh copies three pages, runs scripts, and swaps five files. It do
 
 ## When it runs
 
-Two scheduled tasks run this procedure: `parkrun-dashboard-refresh-saturday` at 9am, 10am, 12pm and 8pm on Saturday, and `parkrun-dashboard-refresh` at 3:30pm on Sunday. Start every attempt with step 0.
+parkrun events post results at different times, so the refresh tries several times and updates for whoever has results so far. Two scheduled tasks run it: `parkrun-dashboard-refresh-saturday` at 9am, 10am, 12pm and 8pm on Saturday, and `parkrun-dashboard-refresh` at 3:30pm on Sunday (the last attempt). An attempt only builds when something is new, and the attempts stop for the week once all three results are in and built.
 
-0. **Should this attempt run?**
-   - Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1`. If it prints `REFRESHED THIS WEEK: YES`, stop: report "Already refreshed this week" and do nothing else.
-   - **Saturday morning attempts only** (9am, 10am, 12pm: Saturday before 4pm), two more checks. If either fails, stop and report why; the next attempt will try again.
-     - Usage: call `get_usage` (mcp__ccd_session_mgmt__get_usage). If any plan window shows 90% used or more, stop.
-     - Results: open `https://www.parkrun.com.au/willoughby/results/latestresults/` in the built-in browser and run `scripts/extract-results-date.js`. Continue only if it returns `RESULTS OUT`. (If it's the human check, ask the user as in step 1.)
-   - The 8pm and Sunday attempts skip those two checks.
-   - **Waiting for the human check** lasts until 10 minutes before the next attempt (9:50am, 11:50am, 7:50pm, 11:59pm Saturday), and until 11:59pm Sunday for the Sunday attempt. Saturday attempts send one notification and no reminders. If time runs out on Saturday, stop without building and say the next attempt will try again.
-
+0. **Should this attempt run?** Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1`.
+   - If it prints `WEEK DONE: YES`, stop: report "All three results are in and on the dashboard" and do nothing else.
+   - **Saturday morning attempts only** (9am, 10am, 12pm: Saturday before 4pm): call `get_usage` (mcp__ccd_session_mgmt__get_usage). If any plan window shows 90% used or more, stop and report it; the next attempt will try again. The 8pm and Sunday attempts skip this check.
+   - Otherwise do step 1.
+   - **Waiting for the human check** (step 1) lasts until 10 minutes before the next attempt (9:50am, 11:50am, 7:50pm, 11:59pm Saturday), and until 11:59pm Sunday for the Sunday attempt. Saturday attempts send one notification and no reminders. When the time is up, keep any runner files already copied and go on to step 1b.
+1b. **Anything new?** After step 1, run `refresh-status.ps1` again.
+   - If it prints `NEW SINCE LAST BUILD: none`, stop without building: report which runners don't have this week's result yet (its `no result this week yet` lines), and that the next attempt will check again.
+   - Otherwise do steps 2–8, and in the step 7 report include its `no result this week yet` lines, if any.
 ## Weekly refresh
 
 1. **Copy the profiles.** For each runner, open `https://www.parkrun.com.au/parkrunner/<number>/` in the built-in browser. Wait a few seconds between pages. Run the contents of `scripts/extract-profile.js` with the browser's JavaScript tool, and write the returned text exactly as-is to `data/A<id>.txt`.
@@ -59,7 +58,7 @@ Two scheduled tasks run this procedure: `parkrun-dashboard-refresh-saturday` at 
 5. **Apply them.** ArtifactData `list` on collection `datasets` to get each document's `version` and its old `source.url`. Then send one `batch` with five `update` entries `{op: "update", collection: "datasets", doc_id: <name>, file_path: "C:\\Users\\mgard\\dev\\parkrun\\raefarer-dash\\dist\\ds\\<name>.json", if_version: <version>}`.
 6. **Delete the old files.** Artifact `delete` with `url` = the dashboard and `path` = each old asset id (the 32 characters after `/_blob/`).
 7. **Report.** Send `dist\share.png` to the user (SendUserFile, status `proactive`, caption: the `CHANGES SINCE LAST BUILD` lines). Mention any new-event warning.
-8. **Record it.** `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1 -Mark`, so later attempts this week stop at step 0. Skip this if any runner couldn't be copied, so the next attempt tries again.
+8. **Record it.** `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\refresh-status.ps1 -Mark`. This records what was built, so later attempts only build again when someone has a new result.
 
 ## Only when the page changes
 
