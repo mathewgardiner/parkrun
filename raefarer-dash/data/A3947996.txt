@@ -1,9 +1,10 @@
-# Katie (A3947996) — fetched 2026-11-22 from https://www.parkrun.com.au/parkrunner/3947996/ (Event Summaries)
-# total: 184
+# Katie (A3947996) — fetched 2026-11-28 from https://www.parkrun.com.au/parkrunner/3947996/ (Event Summaries)
+# total: 185
+# Latest run: 2026-11-28 Willoughby
 # Volunteer credits: 19
 # Volunteer roles: Timekeeper 1, Token Sorting 6, Marshal 3, Other 1, Barcode Scanning 3, Funnel Manager 1, Tail Walker 3, parkwalker 1
 # Event|Runs|BestTime
-Willoughby|43|22:13
+Willoughby|44|22:13
 North Sydney|18|22:27
 Parramatta|5|22:16
 Wentworth Common|5|21:57

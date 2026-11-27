@@ -1,9 +1,10 @@
-# Judi (A7342171) — fetched 2026-11-22 from https://www.parkrun.com.au/parkrunner/7342171/ (Event Summaries)
-# total: 202
+# Judi (A7342171) — fetched 2026-11-28 from https://www.parkrun.com.au/parkrunner/7342171/ (Event Summaries)
+# total: 203
+# Latest run: 2026-11-28 Willoughby
 # Volunteer credits: 26
 # Volunteer roles: Timekeeper 1, Token Sorting 2, Marshal 5, Pre-event Setup 1, Other 1, Barcode Scanning 5, Finish Tokens 1, Funnel Manager 3, Finish Token Support 3, Tail Walker 5, parkwalker 1
 # Event|Runs|BestTime
-Willoughby|50|29:20
+Willoughby|51|29:20
 North Sydney|15|30:51
 Southern Highlands Botanic Gardens|9|29:24
 Wentworth Common|5|28:59
